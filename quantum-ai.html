@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum AI - Супер-интеллект</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/brain.js@2.0.0-beta/dist/browser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ff88;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .ai-container {
+            width: 98%;
+            max-width: 1200px;
+            height: 95vh;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            border: 3px solid #00ff88;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neural-network-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .terminal-header {
+            background: #00ff88;
+            color: #000;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            border-bottom: 2px solid #00cc66;
+        }
+
+        .neural-stats {
+            font-size: 0.9rem;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 90%;
+            border-left: 3px solid #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: #3399ff;
+        }
+
+        .ai-thinking {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00cc66;
+            font-style: italic;
+        }
+
+        .neural-activity {
+            display: flex;
+            gap: 2px;
+        }
+
+        .neuron {
+            width: 4px;
+            height: 12px;
+            background: #00ff88;
+            animation: pulse 1s infinite;
+        }
+
+        .neuron:nth-child(2) { animation-delay: 0.1s; }
+        .neuron:nth-child(3) { animation-delay: 0.2s; }
+        .neuron:nth-child(4) { animation-delay: 0.3s; }
+        .neuron:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+            50% { opacity: 1; transform: scaleY(1.2); }
+        }
+
+        .input-area {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #00ff88;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            color: #00ff88;
+            font-size: 1rem;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .send-btn {
+            padding: 1rem 2rem;
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #00cc66;
+            transform: translateY(-2px);
+        }
+
+        .code-block {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #3399ff;
+        }
+
+        .copy-btn {
+            background: #3399ff;
+            color: #000;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            color: #00ff88;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(0, 255, 136, 0.05);
+            border-bottom: 1px solid #00ff88;
+        }
+
+        .suggestion {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+
+        .suggestion:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            transform: translateY(-2px);
+        }
+
+        .neural-progress {
+            height: 3px;
+            background: linear-gradient(90deg, #00ff88, #3399ff, #ff00ff);
+            background-size: 300% 100%;
+            animation: gradientMove 2s infinite;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+    </style>
+</head>
+<body>
+    <canvas class="neural-network-bg" id="neuralCanvas"></canvas>
+    
+    <div class="ai-container">
+        <div class="terminal-header">
+            <div>🧠 QUANTUM NEURAL AI v2.0 | Точность: 99.8%</div>
+            <div class="neural-stats">Нейроны: 1.2M | Слои: 128 | Обучение: 98.5%</div>
+        </div>
+
+        <div class="suggestions">
+            <div class="suggestion" onclick="askAI('Создай React компонент интернет-магазина')">🛒 React магазин</div>
+            <div class="suggestion" onclick="askAI('Напиши нейросеть на Python для распознавания изображений')">🤖 Python нейросеть</div>
+            <div class="suggestion" onclick="askAI('Сгенерируй 3D сцену с Three.js')">🎮 Three.js 3D</div>
+            <div class="suggestion" onclick="askAI('Создай блокчейн смарт-контракт')">⛓️ Блокчейн контракт</div>
+            <div class="suggestion" onclick="askAI('Оптимизируй этот SQL запрос')">📊 SQL оптимизация</div>
+        </div>
+
+        <div class="chat-area" id="chatArea">
+            <div class="message">
+                <strong>⚡ QUANTUM NEURAL AI АКТИВИРОВАН</strong><br><br>
+                🔬 <strong>Архитектура:</strong> Transformer-based Neural Network<br>
+                💾 <strong>Память:</strong> 12GB контекстного окна<br>
+                🚀 <strong>Возможности:</strong><br>
+                • Генерация сложного кода<br>
+                • Анализ и оптимизация<br>
+                • Создание архитектур<br>
+                • Решение алгоритмических задач<br><br>
+                <div class="neural-progress"></div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" class="ai-input" id="aiInput" placeholder="Введите запрос для нейросети..." onkeypress="handleEnter(event)">
+            <button class="send-btn" onclick="processAIRequest()">ВЫПОЛНИТЬ</button>
+        </div>
+    </div>
+
+    <script>
+        // Имитация нейросети в браузере
+        class QuantumNeuralAI {
+            constructor() {
+                this.model = null;
+                this.initNeuralNetwork();
+            }
+
+            async initNeuralNetwork() {
+                // Имитация инициализации TensorFlow модели
+                console.log("🧠 Инициализация нейросети...");
+                await this.simulateLoading();
+                console.log("✅ Нейросеть готова к работе");
+            }
+
+            async simulateLoading() {
+                return new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            generateResponse(prompt) {
+                const responses = this.getAIResponses();
+                const lowerPrompt = prompt.toLowerCase();
+                
+                // Поиск лучшего ответа
+                for (const [key, response] of Object.entries(responses)) {
+                    if (lowerPrompt.includes(key)) {
+                        return response;
+                    }
+                }
+
+                // Генерация умного ответа
+                return this.generateSmartResponse(prompt);
+            }
+
+            getAIResponses() {
+                return {
+                    'react': this.getReactCode(),
+                    'python': this.getPythonCode(),
+                    'нейросеть': this.getNeuralNetworkCode(),
+                    'three.js': this.getThreeJSCode(),
+                    'блокчейн': this.getBlockchainCode(),
+                    'sql': this.getSQLCode(),
+                    'javascript': this.getJSCode(),
+                    'алгоритм': this.getAlgorithmCode()
+                };
+            }
+
+            getReactCode() {
+                return {
+                    text: "🛒 **React компонент интернет-магазина с хуками и контекстом**",
+                    code: `import React, { useState, useContext, createContext } from 'react';
+
+// Контекст корзины
+const CartContext = createContext();
+
+export const CartProvider = ({ children }) => {
+    const [cart, setCart] = useState([]);
+    
+    const addToCart = (product) => {
+        setCart(prev => {
+            const existing = prev.find(item => item.id === product.id);
+            if (existing) {
+                return prev.map(item => 
+                    item.id === product.id 
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
+                );
+            }
+            return [...prev, { ...product, quantity: 1 }];
+        });
+    };
+
+    const removeFromCart = (productId) => {
+        setCart(prev => prev.filter(item => item.id !== productId));
+    };
+
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    return (
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, total }}>
+            {children}
+        </CartContext.Provider>
+    );
+};
+
+// Компонент продукта
+const ProductCard = ({ product }) => {
+    const { addToCart } = useContext(CartContext);
+    
+    return (
+        <div className="product-card">
+            <img src={product.image} alt={product.name} />
+            <h3>{product.name}</h3>
+            <p>${product.price}</p>
+            <button onClick={() => addToCart(product)}>
+                Добавить в корзину
+            </button>
+        </div>
+    );
+};
+
+// Главный компонент
+const App = () => (
+    <CartProvider>
+        <div className="app">
+            <header>
+                <h1>Quantum Store</h1>
+                <CartIndicator />
+            </header>
+            <ProductGrid />
+        </div>
+    </CartProvider>
+);`
+                };
+            }
+
+            getPythonCode() {
+                return {
+                    text: "🤖 **Нейросеть на Python с TensorFlow для классификации изображений**",
+                    code: `import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+import matplotlib.pyplot as plt
+
+class AdvancedCNN:
+    def __init__(self, input_shape, num_classes):
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+        self.model = self._build_model()
+    
+    def _build_model(self):
+        model = keras.Sequential([
+            # Сверточные слои
+            layers.Conv2D(32, (3, 3), activation='relu', input_shape=self.input_shape),
+            layers.MaxPooling2D((2, 2)),
+            layers.Conv2D(64, (3, 3), activation='relu'),
+            layers.MaxPooling2D((2, 2)),
+            layers.Conv2D(128, (3, 3), activation='relu'),
+            
+            # Полносвязные слои
+            layers.Flatten(),
+            layers.Dense(512, activation='relu'),
+            layers.Dropout(0.5),
+            layers.Dense(256, activation='relu'),
+            layers.Dropout(0.3),
+            layers.Dense(self.num_classes, activation='softmax')
+        ])
+        
+        model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+        
+        return model
+    
+    def train(self, x_train, y_train, x_val, y_val, epochs=50):
+        history = self.model.fit(
+            x_train, y_train,
+            epochs=epochs,
+            validation_data=(x_val, y_val),
+            batch_size=32,
+            callbacks=[
+                keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True),
+                keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=3)
+            ]
+        )
+        return history
+
+# Использование
+if __name__ == "__main__":
+    # Пример данных (CIFAR-10)
+    (x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
+    
+    # Нормализация
+    x_train = x_train.astype('float32') / 255.0
+    x_test = x_test.astype('float32') / 255.0
+    
+    # One-hot encoding
+    y_train = keras.utils.to_categorical(y_train, 10)
+    y_test = keras.utils.to_categorical(y_test, 10)
+    
+    # Создание и обучение модели
+    cnn = AdvancedCNN((32, 32, 3), 10)
+    history = cnn.train(x_train, y_train, x_test, y_test)
+    
+    print("✅ Модель обучена с точностью:", max(history.history['val_accuracy']))`
+                };
+            }
+
+            getNeuralNetworkCode() {
+                return {
+                    text: "🧠 **Реализация нейросети с нуля на NumPy**",
+                    code: `import numpy as np
+import matplotlib.pyplot as plt
+
+class NeuralNetwork:
+    def __init__(self, layers):
+        self.layers = layers
+        self.parameters = {}
+        self.gradients = {}
+        self.initialize_parameters()
+    
+    def initialize_parameters(self):
+        for l in range(1, len(self.layers)):
+            self.parameters[f'W{l}'] = np.random.randn(
+                self.layers[l], self.layers[l-1]) * 0.01
+            self.parameters[f'b{l}'] = np.zeros((self.layers[l], 1))
+    
+    def relu(self, Z):
+        return np.maximum(0, Z)
+    
+    def relu_derivative(self, Z):
+        return Z > 0
+    
+    def softmax(self, Z):
+        expZ = np.exp(Z - np.max(Z))
+        return expZ / expZ.sum(axis=0, keepdims=True)
+    
+    def forward_propagation(self, X):
+        A = X
+        caches = []
+        L = len(self.layers) - 1
+        
+        for l in range(1, L):
+            A_prev = A
+            Z = np.dot(self.parameters[f'W{l}'], A_prev) + self.parameters[f'b{l}']
+            A = self.relu(Z)
+            caches.append((A_prev, Z))
+        
+        ZL = np.dot(self.parameters[f'W{L}'], A) + self.parameters[f'b{L}']
+        AL = self.softmax(ZL)
+        caches.append((A, ZL))
+        
+        return AL, caches
+    
+    def compute_cost(self, AL, Y):
+        m = Y.shape[1]
+        cost = -np.sum(Y * np.log(AL + 1e-8)) / m
+        return cost
+    
+    def backward_propagation(self, AL, Y, caches):
+        m = Y.shape[1]
+        L = len(self.layers) - 1
+        
+        # Output layer gradient
+        dZL = AL - Y
+        self.gradients[f'dW{L}'] = np.dot(dZL, caches[-1][0].T) / m
+        self.gradients[f'db{L}'] = np.sum(dZL, axis=1, keepdims=True) / m
+        
+        # Hidden layers gradients
+        dA_prev = np.dot(self.parameters[f'W{L}'].T, dZL)
+        
+        for l in reversed(range(1, L)):
+            A_prev, Z = caches[l-1]
+            dZ = dA_prev * self.relu_derivative(Z)
+            self.gradients[f'dW{l}'] = np.dot(dZ, A_prev.T) / m
+            self.gradients[f'db{l}'] = np.sum(dZ, axis=1, keepdims=True) / m
+            dA_prev = np.dot(self.parameters[f'W{l}'].T, dZ)
+    
+    def update_parameters(self, learning_rate=0.01):
+        for l in range(1, len(self.layers)):
+            self.parameters[f'W{l}'] -= learning_rate * self.gradients[f'dW{l}']
+            self.parameters[f'b{l}'] -= learning_rate * self.gradients[f'db{l}']
+    
+    def train(self, X, Y, iterations=1000, learning_rate=0.01):
+        costs = []
+        
+        for i in range(iterations):
+            # Forward propagation
+            AL, caches = self.forward_propagation(X)
+            
+            # Compute cost
+            cost = self.compute_cost(AL, Y)
+            costs.append(cost)
+            
+            # Backward propagation
+            self.backward_propagation(AL, Y, caches)
+            
+            # Update parameters
+            self.update_parameters(learning_rate)
+            
+            if i % 100 == 0:
+                print(f"Iteration {i}, Cost: {cost:.4f}")
+        
+        return costs
+
+# Пример использования
+nn = NeuralNetwork([784, 128, 64, 10])  # MNIST classification
+# costs = nn.train(X_train, Y_train)`
+                };
+            }
+
+            generateSmartResponse(prompt) {
+                const smartTemplates = [
+                    `🧠 **Анализ запроса:** "${prompt}"\n\n` +
+                    `🔍 **Глубокий анализ:** На основе паттернов в вашем запросе, нейросеть определила оптимальное решение. ` +
+                    `Используются современные архитектуры и лучшие практики.\n\n` +
+                    `💡 **Рекомендация:** Для реализации рекомендую использовать предложенный код с кастомизацией под ваши требования.`,
+
+                    `⚡ **Генерация решения для:** "${prompt}"\n\n` +
+                    `📊 **Архитектурный подход:** Решение построено на микросервисной архитектуре с использованием облачных технологий. ` +
+                    `Обеспечивает масштабируемость и отказоустойчивость.\n\n` +
+                    `🚀 **Производительность:** Оптимизировано для обработки до 10K RPS с задержкой <50ms.`
+                ];
+
+                return {
+                    text: smartTemplates[Math.floor(Math.random() * smartTemplates.length)],
+                    code: `// Автоматически сгенерированное решение Quantum AI
+// Запрос: "${prompt}"
+
+/**
+ * ⚡ QUANTUM AI GENERATED SOLUTION
+ * 🔬 Сложность: Advanced
+ * 🎯 Точность: 99.8%
+ * 💾 Память: Optimized
+ */
+
+console.log("🚀 Решение активировано Quantum Neural AI");`
+                };
+            }
+        }
+
+        // Инициализация AI
+        const quantumAI = new QuantumNeuralAI();
+
+        // Визуализация нейросети
+        function initNeuralVisualization() {
+            const canvas = document.getElementById('neuralCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            const neurons = [];
+            const connections = [];
+
+            // Создание нейронов
+            for (let i = 0; i < 50; i++) {
+                neurons.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    speed: Math.random() * 0.5 + 0.1,
+                    angle: Math.random() * Math.PI * 2
+                });
+            }
+
+            // Создание соединений
+            for (let i = 0; i < neurons.length; i++) {
+                for (let j = i + 1; j < neurons.length; j++) {
+                    if (Math.random() > 0.7) {
+                        connections.push({ from: i, to: j });
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Обновление нейронов
+                neurons.forEach(neuron => {
+                    neuron.x += Math.cos(neuron.angle) * neuron.speed;
+                    neuron.y += Math.sin(neuron.angle) * neuron.speed;
+
+                    if (neuron.x < 0 || neuron.x > canvas.width) neuron.angle = Math.PI - neuron.angle;
+                    if (neuron.y < 0 || neuron.y > canvas.height) neuron.angle = -neuron.angle;
+
+                    // Отрисовка нейронов
+                    ctx.beginPath();
+                    ctx.arc(neuron.x, neuron.y, neuron.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0, 255, 136, ${neuron.radius / 3})`;
+                    ctx.fill();
+                });
+
+                // Отрисовка соединений
+                connections.forEach(conn => {
+                    const from = neurons[conn.from];
+                    const to = neurons[conn.to];
+                    const distance = Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(from.x, from.y);
+                        ctx.lineTo(to.x, to.y);
+                        ctx.strokeStyle = `rgba(0, 255, 136, ${0.3 * (1 - distance / 150)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // Функции интерфейса
+        async function processAIRequest() {
+            const input = document.getElementById('aiInput');
+            const prompt = input.value.trim();
+            
+            if (!prompt) return;
+
+            addMessage(prompt, 'user');
+            input.value = '';
+
+            // Показ индикатора мышления
+            showThinkingIndicator();
+
+            // Имитация обработки нейросетью
+            await simulateNeuralProcessing();
+
+            // Получение ответа от AI
+            const response = quantumAI.generateResponse(prompt);
+            
+            // Удаление индикатора и добавление ответа
+            removeThinkingIndicator();
+            addAIReponse(response);
+        }
+
+        function showThinkingIndicator() {
+            const chatArea = document.getElementById('chatArea');
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'message ai-thinking';
+            thinkingDiv.id = 'thinkingIndicator';
+            thinkingDiv.innerHTML = `
+                <div class="neural-activity">
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                </div>
+                Квантовая нейросеть обрабатывает запрос...
+            `;
+            chatArea.appendChild(thinkingDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function removeThinkingIndicator() {
+            const thinking = document.getElementById('thinkingIndicator');
+            if (thinking) thinking.remove();
+        }
+
+        async function simulateNeuralProcessing() {
+            return new Promise(resolve => {
+                setTimeout(resolve, 1500 + Math.random() * 1000);
+            });
+        }
+
+        function addAIReponse(response) {
+            const chatArea = document.getElementById('chatArea');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            
+            let content = `<strong>${response.text}</strong><br><br>`;
+            
+            if (response.code) {
+                content += `
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>🔧 СГЕНЕРИРОВАННЫЙ КОД</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                        </div>
+                        <pre>${response.code}</pre>
+                    </div>
+                `;
+            }
+            
+            messageDiv.innerHTML = content;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function addMessage(text, type) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.textContent = text;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function askAI(question) {
+            document.getElementById('aiInput').value = question;
+            processAIRequest();
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                processAIRequest();
+            }
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('pre').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Скопировано!';
+                setTimeout(() => button.textContent = 'Копировать', 2000);
+            });
+        }
+
+        // Инициализация
+        window.addEventListener('load', () => {
+            initNeuralVisualization();
+            console.log("🚀 Quantum Neural AI готов к работе!");
+        });
+    </script>
+</body>
+</html>
