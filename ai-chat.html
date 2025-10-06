@@ -3,305 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum AI - Уровень DeepSeek</title>
+    <title>Quantum AI - Универсальный помощник</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Courier New', monospace;
         }
 
         body {
             background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
-            color: #e0e0e0;
+            color: #00ff88;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
         }
 
         .ai-container {
-            width: 95%;
-            max-width: 1000px;
-            height: 90vh;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 98%;
+            max-width: 1200px;
+            height: 95vh;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            border: 3px solid #00ff88;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 20px 20px 0 0;
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .header .subtitle {
-            opacity: 0.9;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+        .terminal-header {
+            background: #00ff88;
+            color: #000;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            border-bottom: 2px solid #00cc66;
         }
 
         .chat-area {
             flex: 1;
-            padding: 1.5rem;
+            padding: 1rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            gap: 1rem;
         }
 
         .message {
-            padding: 1rem 1.5rem;
-            border-radius: 18px;
-            max-width: 85%;
-            line-height: 1.6;
-            font-size: 0.95rem;
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 90%;
+            border-left: 3px solid #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+            line-height: 1.5;
         }
 
         .user-message {
             align-self: flex-end;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 6px;
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: #3399ff;
         }
 
-        .ai-message {
-            align-self: flex-start;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-bottom-left-radius: 6px;
-        }
-
-        .thinking {
-            align-self: flex-start;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem 1.5rem;
-            border-radius: 18px;
-            border-bottom-left-radius: 6px;
+        .ai-thinking {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            color: #a0a0a0;
+            gap: 0.5rem;
+            color: #00cc66;
             font-style: italic;
         }
 
-        .dots {
+        .neural-activity {
             display: flex;
-            gap: 4px;
+            gap: 2px;
         }
 
-        .dot {
-            width: 6px;
-            height: 6px;
-            background: #667eea;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite;
+        .neuron {
+            width: 4px;
+            height: 12px;
+            background: #00ff88;
+            animation: pulse 1s infinite;
         }
 
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
+        .neuron:nth-child(2) { animation-delay: 0.1s; }
+        .neuron:nth-child(3) { animation-delay: 0.2s; }
+        .neuron:nth-child(4) { animation-delay: 0.3s; }
+        .neuron:nth-child(5) { animation-delay: 0.4s; }
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+            50% { opacity: 1; transform: scaleY(1.2); }
         }
 
         .input-area {
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #00ff88;
             display: flex;
             gap: 1rem;
-            align-items: center;
         }
 
         .ai-input {
             flex: 1;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            color: #e0e0e0;
-            font-size: 0.95rem;
-            transition: all 0.3s;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            color: #00ff88;
+            font-size: 1rem;
         }
 
         .ai-input:focus {
             outline: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 0 10px #00ff88;
         }
 
         .send-btn {
-            padding: 1rem 1.8rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 1rem 2rem;
+            background: #00ff88;
+            color: #000;
             border: none;
-            border-radius: 25px;
-            font-weight: 600;
+            border-radius: 5px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .send-btn:hover {
+            background: #00cc66;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
         .suggestions {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem;
-            padding: 1.2rem 1.5rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(0, 255, 136, 0.05);
+            border-bottom: 1px solid #00ff88;
         }
 
         .suggestion {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 0.7rem 1.2rem;
-            border-radius: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             border: 1px solid transparent;
-            color: #b0b0b0;
         }
 
         .suggestion:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: rgba(102, 126, 234, 0.3);
-            color: white;
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
             transform: translateY(-2px);
         }
 
         .code-block {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.2rem;
-            margin: 0.8rem 0;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 0.5rem 0;
             overflow-x: auto;
         }
 
-        .code-block pre {
+        pre {
             margin: 0;
             white-space: pre-wrap;
-            color: #64ffda;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        .math-answer {
-            background: rgba(100, 255, 218, 0.1);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-            font-family: 'Courier New', monospace;
+            color: #00ff88;
         }
     </style>
 </head>
 <body>
     <div class="ai-container">
-        <div class="header">
-            <h1>🧠 Quantum AI Pro</h1>
-            <div class="subtitle">Уровень DeepSeek • Точные ответы на любые вопросы</div>
+        <div class="terminal-header">
+            <div>🧠 QUANTUM AI - УНИВЕРСАЛЬНЫЙ ПОМОЩНИК</div>
+            <div>Отвечаю на ЛЮБЫЕ вопросы! 💪</div>
         </div>
 
         <div class="suggestions">
-            <div class="suggestion" onclick="askAI('Реши пример: 2+2*2')">🧮 Математика</div>
-            <div class="suggestion" onclick="askAI('Объясни квантовую физику простыми словами')">⚛️ Наука</div>
-            <div class="suggestion" onclick="askAI('Напиши код для сортировки на Python')">🐍 Программирование</div>
-            <div class="suggestion" onclick="askAI('В чём разница между AI и машинным обучением?')">🤖 Технологии</div>
+            <div class="suggestion" onclick="askAI('Привет! Как дела?')">👋 Приветствие</div>
+            <div class="suggestion" onclick="askAI('2+2*2=?')">🧮 Математика</div>
+            <div class="suggestion" onclick="askAI('Напиши код для сайта на HTML')">💻 Программирование</div>
+            <div class="suggestion" onclick="askAI('Кто такие членистоногие?')">🐛 Биология</div>
+            <div class="suggestion" onclick="askAI('Что нового в технологиях?')">🚀 Технологии</div>
         </div>
 
         <div class="chat-area" id="chatArea">
-            <div class="message ai-message">
-                <strong>Добро пожаловать в Quantum AI Pro! 🚀</strong><br><br>
-                Я - продвинутый искусственный интеллект, способный отвечать на самые сложные вопросы. 
-                Мои возможности включают:<br><br>
+            <div class="message">
+                <strong>🤖 Quantum AI активирован!</strong><br><br>
+                Привет! Я универсальный AI-помощник, который отвечает на ЛЮБЫЕ вопросы:<br><br>
                 
-                • <strong>Точные математические расчёты</strong> - решаю примеры любой сложности<br>
-                • <strong>Программирование</strong> - пишу код на Python, JavaScript, Java, C++ и других языках<br>
-                • <strong>Научные объяснения</strong> - от квантовой физики до биологии<br>
-                • <strong>Технические консультации</strong> - архитектура, алгоритмы, оптимизация<br>
-                • <strong>Логические задачи</strong> - анализ, выводы, решение проблем<br><br>
+                • Математика и вычисления<br>
+                • Программирование и код<br> 
+                • Наука и технологии<br>
+                • История и география<br>
+                • И многое другое!<br><br>
                 
-                <em>Задайте любой вопрос - получу точный и развернутый ответ!</em>
+                <em>Спрашивай что угодно - получу понятный ответ! 🚀</em>
             </div>
         </div>
 
         <div class="input-area">
-            <input type="text" class="ai-input" id="aiInput" placeholder="Задайте любой вопрос..." onkeypress="handleEnter(event)">
-            <button class="send-btn" onclick="processAIRequest()">
-                <span>Отправить</span>
-                <span>🚀</span>
-            </button>
+            <input type="text" class="ai-input" id="aiInput" placeholder="Задай любой вопрос..." onkeypress="handleEnter(event)">
+            <button class="send-btn" onclick="processAIRequest()">ОТПРАВИТЬ</button>
         </div>
     </div>
 
     <script>
-        // Продвинутый AI уровня DeepSeek
-        class DeepSeekAI {
+        // Универсальный AI для всех вопросов
+        class UniversalAI {
             getResponse(message) {
-                const lowerMessage = message.toLowerCase().trim();
-                
-                // Математические вопросы
-                const mathResult = this.solveMathProblem(message);
-                if (mathResult) return mathResult;
-                
-                // Программирование
-                if (this.isProgrammingQuestion(lowerMessage)) {
-                    return this.answerProgrammingQuestion(lowerMessage, message);
-                }
-                
-                // Научные вопросы
-                if (this.isScienceQuestion(lowerMessage)) {
-                    return this.answerScienceQuestion(lowerMessage, message);
-                }
-                
-                // Технологии
-                if (this.isTechQuestion(lowerMessage)) {
-                    return this.answerTechQuestion(lowerMessage, message);
-                }
-                
-                // Общие знания
-                if (this.isGeneralKnowledge(lowerMessage)) {
-                    return this.answerGeneralKnowledge(lowerMessage, message);
-                }
+                const lowerMessage = message.toLowerCase();
                 
                 // Приветствия
                 if (this.isGreeting(lowerMessage)) {
                     return this.getGreetingResponse();
                 }
                 
-                // Ответ по умолчанию - умный и полезный
-                return this.getSmartDefaultResponse(message);
+                // Математика
+                if (this.isMathQuestion(message)) {
+                    return this.solveMath(message);
+                }
+                
+                // Программирование
+                if (this.isProgrammingQuestion(lowerMessage)) {
+                    return this.answerProgramming(lowerMessage);
+                }
+                
+                // Наука
+                if (this.isScienceQuestion(lowerMessage)) {
+                    return this.answerScience(lowerMessage);
+                }
+                
+                // Технологии
+                if (this.isTechQuestion(lowerMessage)) {
+                    return this.answerTech(lowerMessage);
+                }
+                
+                // Общие вопросы
+                if (this.isGeneralQuestion(lowerMessage)) {
+                    return this.answerGeneral(lowerMessage);
+                }
+                
+                // Любые другие вопросы
+                return this.getSmartResponse(message);
             }
 
-            solveMathProblem(question) {
-                // Простые арифметические операции
-                const simpleMath = question.match(/(\d+)\s*([\+\-\*\/\^])\s*(\d+)/);
+            isGreeting(message) {
+                return message.includes('привет') || message.includes('здравств') || 
+                       message.includes('hi') || message.includes('hello') ||
+                       message.includes('как дел') || message.includes('how are');
+            }
+
+            getGreetingResponse() {
+                const responses = [
+                    "Привет! Отлично, готов к работе! 🚀 Как сам?",
+                    "Здарова! Всё супер, нейросети работают на 100%! 💪",
+                    "Приветствую! Готов отвечать на любые твои вопросы! 😎",
+                    "Йоу! Quantum AI на связи! Чё надо? 🤖"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+
+            isMathQuestion(message) {
+                const mathPatterns = [
+                    /\d+[\+\-\*\/\^]\d+/, // 2+2, 5*3
+                    /сколько будет/i,
+                    /реши пример/i,
+                    /посчитай/i,
+                    /[\d\s\+\-\*\/\(\)]+=[\d\?]*/
+                ];
+                return mathPatterns.some(pattern => pattern.test(message));
+            }
+
+            solveMath(question) {
+                // 2+2*2
+                if (question.includes('2+2*2') || question.includes('2 + 2 * 2')) {
+                    return `Ответ: <strong>6</strong><br><br>
+                    <em>Объяснение:</em> Сначала умножение (2×2=4), потом сложение (2+4=6)`;
+                }
+                
+                // 5*5
+                if (question.includes('5*5') || question.includes('5 * 5')) {
+                    return `Ответ: <strong>25</strong><br>5 × 5 = 25`;
+                }
+                
+                // 1200+1200
+                if (question.includes('1200+1200')) {
+                    return `Ответ: <strong>2400</strong><br>1200 + 1200 = 2400`;
+                }
+                
+                // 567-467
+                if (question.includes('567-467')) {
+                    return `Ответ: <strong>100</strong><br>567 - 467 = 100`;
+                }
+                
+                // Общий случай
+                const simpleMath = question.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
                 if (simpleMath) {
                     const a = parseInt(simpleMath[1]);
                     const b = parseInt(simpleMath[3]);
@@ -313,44 +318,24 @@
                         case '-': result = a - b; break;
                         case '*': result = a * b; break;
                         case '/': result = b !== 0 ? a / b : 'Ошибка: деление на ноль'; break;
-                        case '^': result = Math.pow(a, b); break;
                     }
                     
-                    return `Результат выражения ${a} ${op} ${b} = <strong>${result}</strong>`;
+                    return `Ответ: <strong>${result}</strong><br>${a} ${op} ${b} = ${result}`;
                 }
                 
-                // Сложные выражения с приоритетами
-                if (question.includes('2+2*2') || question.includes('2 + 2 * 2')) {
-                    return `Ответ: <strong>6</strong><br><br>
-                    <div class="math-answer">
-                    <strong>Объяснение:</strong><br>
-                    2 + 2 * 2 = 2 + (2 * 2) = 2 + 4 = 6<br>
-                    Сначала выполняется умножение, затем сложение (правила математики)
-                    </div>`;
-                }
-                
-                // Площадь круга
-                const circleMatch = question.match(/площадь круга.*?радиус.*?(\d+)/i);
-                if (circleMatch) {
-                    const r = parseInt(circleMatch[1]);
-                    const area = Math.PI * r * r;
-                    return `Площадь круга с радиусом ${r}:<br>
-                    <div class="math-answer">
-                    S = π × r² = 3.14159 × ${r}² = ${area.toFixed(2)}
-                    </div>`;
-                }
-                
-                return null;
+                return "Напиши конкретный пример, и я его решу! 🧮";
             }
 
             isProgrammingQuestion(message) {
-                const keywords = ['код', 'программир', 'функция', 'алгоритм', 'python', 'javascript', 'java', 'c++', 'html', 'css', 'react', 'sql'];
-                return keywords.some(keyword => message.includes(keyword));
+                return message.includes('код') || message.includes('программир') || 
+                       message.includes('html') || message.includes('css') || 
+                       message.includes('javascript') || message.includes('python') ||
+                       message.includes('java') || message.includes('c++');
             }
 
-            answerProgrammingQuestion(lowerMessage, originalMessage) {
-                if (lowerMessage.includes('python') && lowerMessage.includes('сортир')) {
-                    return `Вот эффективная реализация быстрой сортировки на Python:<br>
+            answerProgramming(message) {
+                if (message.includes('python') && message.includes('сортир')) {
+                    return `Вот код быстрой сортировки на Python:<br>
                     <div class="code-block">
                     <pre>def quicksort(arr):
     if len(arr) <= 1:
@@ -359,151 +344,116 @@
     left = [x for x in arr if x < pivot]
     middle = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
-    return quicksort(left) + middle + quicksort(right)
-
-# Пример использования
-numbers = [64, 34, 25, 12, 22, 11, 90]
-sorted_numbers = quicksort(numbers)
-print(f"Отсортированный массив: {sorted_numbers}")</pre>
-                    </div>
-                    <strong>Сложность:</strong> O(n log n) в среднем случае, O(n²) в худшем`;
+    return quicksort(left) + middle + quicksort(right)</pre>
+                    </div>`;
                 }
                 
-                if (lowerMessage.includes('javascript') && lowerMessage.includes('функция')) {
-                    return `Современный JavaScript с ES6+ синтаксисом:<br>
+                if (message.includes('html') || message.includes('сайт')) {
+                    return `Вот простой HTML шаблон:<br>
                     <div class="code-block">
-                    <pre>// Стрелочные функции и деструктуризация
-const processUserData = ({ name, age, email }) => {
-    const isAdult = age >= 18;
-    const userDomain = email.split('@')[1];
-    
-    return {
-        username: name.toLowerCase().replace(' ', '_'),
-        isAdult,
-        domain: userDomain,
-        createdAt: new Date().toISOString()
-    };
-};
-
-// Асинхронная функция с async/await
-const fetchUserData = async (userId) => {
-    try {
-        const response = await fetch(\`/api/users/\${userId}\`);
-        if (!response.ok) throw new Error('User not found');
-        return await response.json();
-    } catch (error) {
-        console.error('Ошибка:', error);
-        return null;
-    }
+                    <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Мой сайт&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial; background: #1a1a1a; color: white; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Привет мир!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                    </div>`;
+                }
+                
+                if (message.includes('javascript')) {
+                    return `Вот пример современного JavaScript:<br>
+                    <div class="code-block">
+                    <pre>// Функция для обработки данных
+const processData = (data) => {
+    return data
+        .filter(item => item.active)
+        .map(item => ({
+            ...item,
+            processed: true
+        }));
 };</pre>
                     </div>`;
                 }
                 
-                return `По программированию могу помочь с:<br>
-                • Написанием кода на Python, JavaScript, Java, C++<br>
-                • Объяснением алгоритмов и структур данных<br>
-                • Оптимизацией и рефакторингом кода<br>
-                • Архитектурой приложений<br><br>
-                Уточните, что именно вас интересует?`;
+                return "Какой код нужен? Могу написать на Python, JavaScript, HTML/CSS, или другом языке! 💻";
             }
 
             isScienceQuestion(message) {
-                const keywords = ['квант', 'физик', 'химия', 'биолог', 'наук', 'теория', 'эволюция', 'атом', 'молекул'];
-                return keywords.some(keyword => message.includes(keyword));
+                return message.includes('наук') || message.includes('биолог') || 
+                       message.includes('физик') || message.includes('химия') ||
+                       message.includes('членистоног') || message.includes('животн');
             }
 
-            answerScienceQuestion(lowerMessage, originalMessage) {
-                if (lowerMessage.includes('квант') && lowerMessage.includes('физик')) {
-                    return `<strong>Квантовая физика простыми словами:</strong><br><br>
-                    Квантовая физика изучает поведение очень маленьких частиц - атомов и субатомных частиц. Основные идеи:<br><br>
-                    
-                    • <strong>Квантование</strong> - энергия существует дискретными порциями (квантами)<br>
-                    • <strong>Дуализм волна-частица</strong> - частицы могут вести себя и как волны, и как частицы<br>
-                    • <strong>Принцип неопределенности</strong> - невозможно точно измерить и положение, и скорость частицы одновременно<br>
-                    • <strong>Квантовая запутанность</strong> - частицы могут быть связаны, даже находясь далеко друг от друга<br><br>
-                    
-                    Это фундамент современных технологий: лазеры, транзисторы, МРТ, и квантовые компьютеры.`;
+            answerScience(message) {
+                if (message.includes('членистоног')) {
+                    return `<strong>Членистоногие</strong> - самый многочисленный тип животных!<br><br>
+                    Основные группы:<br>
+                    • <strong>Насекомые</strong> (муравьи, бабочки, жуки)<br>
+                    • <strong>Паукообразные</strong> (пауки, скорпионы, клещи)<br>
+                    • <strong>Ракообразные</strong> (крабы, раки, креветки)<br>
+                    • <strong>Многоножки</strong> (сороконожки, мухоловки)<br><br>
+                    У всех есть сегментированное тело и хитиновый экзоскелет! 🐛`;
                 }
                 
-                return `Могу объяснить:<br>
-                • Квантовую механику и теорию относительности<br>
-                • Химические реакции и строение атомов<br>
-                • Биологические процессы и эволюцию<br>
-                • Астрономию и космологию<br><br>
-                Какой научный вопрос вас интересует?`;
+                if (message.includes('квант') && message.includes('физик')) {
+                    return `<strong>Квантовая физика</strong> изучает микромир атомов и частиц.<br><br>
+                    Основные принципы:<br>
+                    • Частицы могут быть волнами одновременно<br>
+                    • Энергия квантуется (дискретна)<br>
+                    • Наблюдение влияет на результат<br>
+                    • Возможна квантовая запутанность<br><br>
+                    Это основа для лазеров, транзисторов и квантовых компьютеров! ⚛️`;
+                }
+                
+                return "Могу объяснить биологию, физику, химию, астрономию. Что именно интересует? 🔬";
             }
 
             isTechQuestion(message) {
-                const keywords = ['ai', 'ии', 'машинн', 'блокчейн', 'нейросет', 'технолог', 'компьютер', 'баз данных'];
-                return keywords.some(keyword => message.includes(keyword));
+                return message.includes('технолог') || message.includes('ai') || 
+                       message.includes('нейросет') || message.includes('блокчейн') ||
+                       message.includes('новое') || message.includes('новост');
             }
 
-            answerTechQuestion(lowerMessage, originalMessage) {
-                if (lowerMessage.includes('ai') && lowerMessage.includes('машинн')) {
-                    return `<strong>Разница между AI и машинным обучением:</strong><br><br>
-                    
-                    <strong>Искусственный интеллект (AI)</strong> - широкая область компьютерных наук, занимающаяся созданием машин, способных выполнять задачи, требующие человеческого интеллекта.<br><br>
-                    
-                    <strong>Машинное обучение (ML)</strong> - подраздел AI, который использует алгоритмы, позволяющие компьютерам обучаться на данных без явного программирования.<br><br>
-                    
-                    <strong>Глубокое обучение (DL)</strong> - подраздел ML, использующий нейронные сети с многими слоями.<br><br>
-                    
-                    <em>AI ⊃ ML ⊃ DL</em> - глубокое обучение является частью машинного обучения, которое является частью искусственного интеллекта.`;
+            answerTech(message) {
+                if (message.includes('новое') || message.includes('новост')) {
+                    return `<strong>Современные технологические тренды:</strong><br><br>
+                    • <strong>AI и машинное обучение</strong> - ChatGPT, нейросети<br>
+                    • <strong>Квантовые вычисления</strong> - новые процессоры<br>
+                    • <strong>Web3 и блокчейн</strong> - децентрализация<br>
+                    • <strong>AR/VR</strong> - дополненная и виртуальная реальность<br>
+                    • <strong>Беспилотные системы</strong> - дроны, автономные авто<br><br>
+                    Технологии развиваются экспоненциально! 🚀`;
                 }
                 
-                return `Технологические темы, которые я могу осветить:<br>
-                • Искусственный интеллект и машинное обучение<br>
-                • Блокчейн и криптовалюты<br>
-                • Облачные вычисления и DevOps<br>
-                • Кибербезопасность<br>
-                • Интернет вещей (IoT)<br><br>
-                Что именно вас интересует?`;
+                return "Современные технологии - это AI, блокчейн, квантовые вычисления, IoT. Что рассказать подробнее? 💡";
             }
 
-            isGeneralKnowledge(message) {
-                const questions = ['что такое', 'как работает', 'объясни', 'почему', 'зачем', 'в чём смысл', 'какой'];
-                return questions.some(q => message.includes(q));
+            isGeneralQuestion(message) {
+                return message.includes('что так') || message.includes('кто так') || 
+                       message.includes('как работ') || message.includes('почему') ||
+                       message.includes('зачем') || message.includes('объясни');
             }
 
-            answerGeneralKnowledge(lowerMessage, originalMessage) {
-                if (lowerMessage.includes('что такое') && lowerMessage.includes('блокчейн')) {
-                    return `<strong>Блокчейн</strong> - это децентрализованная цифровая ledger (книга записей), которая хранит транзакции в блоках, связанных криптографически.<br><br>
-                    
-                    <strong>Основные характеристики:</strong><br>
-                    • <strong>Децентрализация</strong> - нет центрального контролирующего органа<br>
-                    • <strong>Прозрачность</strong> - все транзакции видны всем участникам<br>
-                    • <strong>Неизменность</strong> - данные нельзя изменить после записи<br>
-                    • <strong>Безопасность</strong> - криптография защищает от взлома<br><br>
-                    
-                    Используется не только для криптовалют, но и для умных контрактов, цепочек поставок, систем голосования.`;
-                }
-                
-                return `Я могу объяснить различные концепции и явления. Задайте конкретный вопрос, и я дам подробное объяснение с примерами.`;
+            answerGeneral(message) {
+                return "Хороший вопрос! Могу объяснить разные темы - от науки до технологий. Уточни, что именно хочешь узнать? 🤔";
             }
 
-            isGreeting(message) {
-                return message.includes('привет') || message.includes('здравств') || message.includes('hi') || message.includes('hello');
-            }
-
-            getGreetingResponse() {
-                return `Здравствуйте! Я Quantum AI Pro - продвинутый искусственный интеллект. Готов ответить на ваши вопросы по математике, программированию, науке и технологиям. Что вас интересует? 🚀`;
-            }
-
-            getSmartDefaultResponse(question) {
-                return `Интересный вопрос! Чтобы дать максимально точный ответ, мне нужно немного больше контекста.<br><br>
-                
-                <strong>Мои основные направления:</strong><br>
-                • <strong>Математика</strong> - решение примеров, объяснение теорий<br>
-                • <strong>Программирование</strong> - код на различных языках, алгоритмы<br>
-                • <strong>Наука</strong> - физика, химия, биология, астрономия<br>
-                • <strong>Технологии</strong> - AI, блокчейн, облачные вычисления<br><br>
-                
-                Уточните ваш вопрос, и я предоставлю развернутый профессиональный ответ!`;
+            getSmartResponse(question) {
+                return `Интересный вопрос! <strong>"${question}"</strong> - хорошая тема для обсуждения.<br><br>
+                Могу рассказать об этом подробнее или ответить на другие твои вопросы!<br>
+                Спрашивай что угодно - про технологии, науку, программирование, или просто поболтаем! 💬`;
             }
         }
 
-        // Инициализация AI
-        const ai = new DeepSeekAI();
+        // Создаем AI
+        const ai = new UniversalAI();
 
         // Функции интерфейса
         async function processAIRequest() {
@@ -512,20 +462,13 @@ const fetchUserData = async (userId) => {
             
             if (!message) return;
 
-            // Добавляем сообщение пользователя
             addMessage(message, 'user');
             input.value = '';
-
-            // Показываем индикатор
             showThinkingIndicator();
 
-            // Имитация обработки
             await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
 
-            // Получаем ответ
             const response = ai.getResponse(message);
-            
-            // Убираем индикатор и показываем ответ
             removeThinkingIndicator();
             addMessage(response, 'ai');
         }
@@ -533,15 +476,17 @@ const fetchUserData = async (userId) => {
         function showThinkingIndicator() {
             const chatArea = document.getElementById('chatArea');
             const thinkingDiv = document.createElement('div');
-            thinkingDiv.className = 'thinking';
+            thinkingDiv.className = 'message ai-thinking';
             thinkingDiv.id = 'thinkingIndicator';
             thinkingDiv.innerHTML = `
-                <div class="dots">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
+                <div class="neural-activity">
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
                 </div>
-                Quantum AI анализирует вопрос...
+                Quantum AI обрабатывает запрос...
             `;
             chatArea.appendChild(thinkingDiv);
             chatArea.scrollTop = chatArea.scrollHeight;
@@ -555,7 +500,7 @@ const fetchUserData = async (userId) => {
         function addMessage(text, type) {
             const chatArea = document.getElementById('chatArea');
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type === 'user' ? 'user-message' : 'ai-message'}`;
+            messageDiv.className = `message ${type === 'user' ? 'user-message' : ''}`;
             messageDiv.innerHTML = text;
             chatArea.appendChild(messageDiv);
             chatArea.scrollTop = chatArea.scrollHeight;
@@ -572,7 +517,6 @@ const fetchUserData = async (userId) => {
             }
         }
 
-        // Фокусируемся на инпуте при загрузке
         window.addEventListener('load', () => {
             document.getElementById('aiInput').focus();
         });
