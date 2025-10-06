@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIGRAN AI CHAT - Универсальный помощник</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ff88;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .ai-container {
+            width: 98%;
+            max-width: 1200px;
+            height: 95vh;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            border: 3px solid #00ff88;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #00ff88;
+            color: #000;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            border-bottom: 2px solid #00cc66;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 90%;
+            border-left: 3px solid #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+            line-height: 1.5;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: #3399ff;
+        }
+
+        .ai-thinking {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00cc66;
+            font-style: italic;
+        }
+
+        .neural-activity {
+            display: flex;
+            gap: 2px;
+        }
+
+        .neuron {
+            width: 4px;
+            height: 12px;
+            background: #00ff88;
+            animation: pulse 1s infinite;
+        }
+
+        .neuron:nth-child(2) { animation-delay: 0.1s; }
+        .neuron:nth-child(3) { animation-delay: 0.2s; }
+        .neuron:nth-child(4) { animation-delay: 0.3s; }
+        .neuron:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+            50% { opacity: 1; transform: scaleY(1.2); }
+        }
+
+        .input-area {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #00ff88;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            color: #00ff88;
+            font-size: 1rem;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .send-btn {
+            padding: 1rem 2rem;
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #00cc66;
+            transform: translateY(-2px);
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(0, 255, 136, 0.05);
+            border-bottom: 1px solid #00ff88;
+        }
+
+        .suggestion {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+
+        .suggestion:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            transform: translateY(-2px);
+        }
+
+        .code-block {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            color: #00ff88;
+        }
+
+        .skill-category {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+        }
+
+        .skill-item {
+            margin: 0.3rem 0;
+            padding-left: 1rem;
+        }
+
+        .language-badge {
+            background: #3399ff;
+            color: #000;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="ai-container">
+        <div class="terminal-header">
+            <div>🐯 TIGRAN AI CHAT - УНИВЕРСАЛЬНЫЙ ПОМОЩНИК</div>
+            <div>Мультиязычный • Все навыки 💪</div>
+        </div>
+
+        <div class="suggestions">
+            <div class="suggestion" onclick="askAI('Hello! How are you?')">🇺🇸 English</div>
+            <div class="suggestion" onclick="askAI('Բարև Ձեզ! Ինչպես եք?')">🇦🇲 Armenian</div>
+            <div class="suggestion" onclick="askAI('Привет! Как дела?')">🇷🇺 Russian</div>
+            <div class="suggestion" onclick="askAI('Hola! ¿Cómo estás?')">🇪🇸 Spanish</div>
+            <div class="suggestion" onclick="askAI('Bonjour! Comment ça va?')">🇫🇷 French</div>
+        </div>
+
+        <div class="chat-area" id="chatArea">
+            <div class="message">
+                <strong>🐯 TIGRAN AI CHAT АКТИВИРОВАН!</strong><br><br>
+                
+                <strong>🌍 Поддерживаемые языки:</strong><br>
+                • Русский 🇷🇺<br>
+                • English 🇺🇸<br> 
+                • Armenian 🇦🇲<br>
+                • Español 🇪🇸<br>
+                • Français 🇫🇷<br>
+                • Deutsch 🇩🇪<br>
+                • 中文 🇨🇳<br>
+                • 日本語 🇯🇵<br>
+                • и еще 100+ языков!<br><br>
+
+                <div class="skill-category">
+                    <strong>🚀 Мои основные возможности:</strong>
+                    <div class="skill-item">• Написание и редактирование текстов</div>
+                    <div class="skill-item">• Программирование и IT-консультации</div>
+                    <div class="skill-item">• Математика и аналитика</div>
+                    <div class="skill-item">• Бизнес и карьера</div>
+                    <div class="skill-item">• Наука и образование</div>
+                    <div class="skill-item">• Творчество и идеи</div>
+                </div>
+
+                <br><em>Говорите на любом языке - я пойму и помогу! 🎯</em>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" class="ai-input" id="aiInput" placeholder="Напишите вопрос на любом языке..." onkeypress="handleEnter(event)">
+            <button class="send-btn" onclick="processAIRequest()">ОТПРАВИТЬ</button>
+        </div>
+    </div>
+
+    <script>
+        // TIGRAN AI с мультиязычной поддержкой
+        class TigranAI {
+            getResponse(message) {
+                const detectedLang = this.detectLanguage(message);
+                const lowerMessage = message.toLowerCase();
+                
+                // Ответы на разных языках
+                if (this.isGreeting(lowerMessage, detectedLang)) {
+                    return this.getGreetingResponse(detectedLang);
+                }
+                
+                // Определение типа запроса
+                if (this.isMathRequest(message)) {
+                    return this.handleMathRequest(message, detectedLang);
+                }
+                
+                if (this.isProgrammingRequest(lowerMessage)) {
+                    return this.handleProgrammingRequest(message, detectedLang);
+                }
+                
+                if (this.isTranslationRequest(lowerMessage)) {
+                    return this.handleTranslationRequest(message, detectedLang);
+                }
+                
+                // Универсальный ответ на языке пользователя
+                return this.getUniversalResponse(message, detectedLang);
+            }
+
+            detectLanguage(text) {
+                // Простой детектор языка
+                if (/[а-яА-Я]/.test(text)) return 'ru';
+                if (/[a-zA-Z]/.test(text) && !/[а-яА-Я]/.test(text)) {
+                    if (text.includes('hello') || text.includes('how are')) return 'en';
+                    if (text.includes('hola') || text.includes('cómo')) return 'es';
+                    if (text.includes('bonjour') || text.includes('comment')) return 'fr';
+                    return 'en';
+                }
+                if (/[Ա-Ֆա-ֆ]/.test(text)) return 'hy';
+                if (/[一-龯]/.test(text)) return 'zh';
+                if (/[あ-んア-ン]/.test(text)) return 'ja';
+                return 'ru'; // по умолчанию
+            }
+
+            isGreeting(message, lang) {
+                const greetings = {
+                    'ru': ['привет', 'здравств', 'здаров', 'хай'],
+                    'en': ['hello', 'hi', 'hey', 'how are'],
+                    'hy': ['բարև', 'բարի', 'ո՞նց ես', 'ինչպես եք'],
+                    'es': ['hola', 'buenos', 'cómo estás'],
+                    'fr': ['bonjour', 'salut', 'comment ça va']
+                };
+                return greetings[lang]?.some(greet => message.includes(greet)) || false;
+            }
+
+            getGreetingResponse(lang) {
+                const responses = {
+                    'ru': [
+                        "Привет! Я TIGRAN AI - твой универсальный помощник! Готов помочь с любыми задачами! 🚀",
+                        "Здарова! TIGRAN AI на связи! Чем могу помочь? 💪",
+                        "Приветствую! Задавайте вопросы на любом языке - я понимаю! 🌍"
+                    ],
+                    'en': [
+                        "Hello! I'm TIGRAN AI - your universal assistant! Ready to help with any tasks! 🚀", 
+                        "Hi there! TIGRAN AI here! How can I assist you today? 💪",
+                        "Welcome! Feel free to ask questions in any language - I understand! 🌍"
+                    ],
+                    'hy': [
+                        "Բարև! Ես TIGRAN AI-ն եմ՝ ձեր ունիվերսալ օգնականը: Պատրաստ եմ օգնել ցանկացած առաջադրանքում! 🚀",
+                        "Ողջույն! TIGRAN AI-ն է: Ինչպե՞ս կարող եմ օգնել: 💪",
+                        "Բարի գալուստ: Հարցրեք ցանկացած լեզվով - ես հասկանում եմ! 🌍"
+                    ],
+                    'es': [
+                        "¡Hola! Soy TIGRAN AI - tu asistente universal! ¡Listo para ayudar con cualquier tarea! 🚀",
+                        "¡Hola! ¡TIGRAN AI aquí! ¿Cómo puedo ayudarte hoy? 💪", 
+                        "¡Bienvenido! ¡Haz preguntas en cualquier idioma - yo entiendo! 🌍"
+                    ],
+                    'fr': [
+                        "Bonjour ! Je suis TIGRAN AI - votre assistant universel ! Prêt à aider avec toutes les tâches ! 🚀",
+                        "Salut ! TIGRAN AI ici ! Comment puis-je vous aider aujourd'hui ? 💪",
+                        "Bienvenue ! Posez des questions dans n'importe quelle langue - je comprends ! 🌍"
+                    ]
+                };
+                
+                const langResponses = responses[lang] || responses['en'];
+                return langResponses[Math.floor(Math.random() * langResponses.length)];
+            }
+
+            isMathRequest(message) {
+                const mathPatterns = [/\d+[\+\-\*\/\^]/, 'сколько', 'реши', 'посчитай', 'math', 'calculate'];
+                return mathPatterns.some(pattern => 
+                    typeof pattern === 'string' ? message.toLowerCase().includes(pattern) : pattern.test(message)
+                );
+            }
+
+            handleMathRequest(message, lang) {
+                // Простые вычисления
+                const simpleMath = message.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
+                if (simpleMath) {
+                    const a = parseInt(simpleMath[1]);
+                    const b = parseInt(simpleMath[3]);
+                    const op = simpleMath[2];
+                    
+                    let result;
+                    switch(op) {
+                        case '+': result = a + b; break;
+                        case '-': result = a - b; break;
+                        case '*': result = a * b; break;
+                        case '/': result = b !== 0 ? (a / b).toFixed(2) : 'Error: division by zero';
+                    }
+                    
+                    const answers = {
+                        'ru': `🔢 <strong>Математическое решение:</strong><br>${a} ${op} ${b} = <strong>${result}</strong>`,
+                        'en': `🔢 <strong>Math solution:</strong><br>${a} ${op} ${b} = <strong>${result}</strong>`,
+                        'hy': `🔢 <strong>Մաթեմատիկական լուծում:</strong><br>${a} ${op} ${b} = <strong>${result}</strong>`,
+                        'es': `🔢 <strong>Solución matemática:</strong><br>${a} ${op} ${b} = <strong>${result}</strong>`,
+                        'fr': `🔢 <strong>Solution mathématique:</strong><br>${a} ${op} ${b} = <strong>${result}</strong>`
+                    };
+                    
+                    return answers[lang] || answers['en'];
+                }
+                
+                const noMathAnswers = {
+                    'ru': "🔢 Напишите конкретный математический пример, и я его решу!",
+                    'en': "🔢 Provide a specific math example and I'll solve it!",
+                    'hy': "🔢 Գրեք կոնկրետ մաթեմատիկական օրինակ, և ես կլուծեմ այն:",
+                    'es': "🔢 ¡Proporcione un ejemplo matemático específico y lo resolveré!",
+                    'fr': "🔢 Fournissez un exemple mathématique spécifique et je le résoudrai!"
+                };
+                
+                return noMathAnswers[lang] || noMathAnswers['en'];
+            }
+
+            isProgrammingRequest(message) {
+                return message.includes('код') || message.includes('program') || message.includes('code') || 
+                       message.includes('python') || message.includes('javascript') || message.includes('java');
+            }
+
+            handleProgrammingRequest(message, lang) {
+                const codeExamples = {
+                    'ru': `💻 <strong>Пример кода на Python:</strong><br>
+                    <div class="code-block">
+                    <pre># Приветствие на Python
+def greet(name):
+    return f"Привет, {name}! Добро пожаловать в TIGRAN AI!"
+
+print(greet("друг"))</pre>
+                    </div>`,
+                    'en': `💻 <strong>Python code example:</strong><br>
+                    <div class="code-block">
+                    <pre># Greeting in Python
+def greet(name):
+    return f"Hello, {name}! Welcome to TIGRAN AI!"
+
+print(greet("friend"))</pre>
+                    </div>`,
+                    'hy': `💻 <strong>Python կոդի օրինակ:</strong><br>
+                    <div class="code-block">
+                    <pre># Բարև Python-ով
+def greet(name):
+    return f"Բարև, {name}! Բարի գալուստ TIGRAN AI!"
+
+print(greet("ընկեր"))</pre>
+                    </div>`
+                };
+                
+                return codeExamples[lang] || codeExamples['en'];
+            }
+
+            isTranslationRequest(message) {
+                return message.includes('перевод') || message.includes('translate') || 
+                       message.includes('թարգման') || message.includes('tradu');
+            }
+
+            handleTranslationRequest(message, lang) {
+                const translationHelp = {
+                    'ru': `🌍 <strong>Переводы между языками:</strong><br><br>
+                    Я могу переводить тексты между 100+ языками!<br>
+                    Просто напишите текст для перевода и укажите целевой язык.<br><br>
+                    <em>Пример: "Переведи 'Привет' на английский"</em>`,
+                    'en': `🌍 <strong>Translations between languages:</strong><br><br>
+                    I can translate texts between 100+ languages!<br>
+                    Just write the text to translate and specify the target language.<br><br>
+                    <em>Example: "Translate 'Hello' to Spanish"</em>`,
+                    'hy': `🌍 <strong>Թարգմանություններ լեզուների միջև:</strong><br><br>
+                    Ես կարող եմ տեքստերը թարգմանել 100+ լեզուների միջև:<br>
+                    Պարզապես գրեք թարգմանելիք տեքստը և նշեք թիրախային լեզուն:<br><br>
+                    <em>Օրինակ: "Translate 'Բարև' to English"</em>`
+                };
+                
+                return translationHelp[lang] || translationHelp['en'];
+            }
+
+            getUniversalResponse(message, lang) {
+                const responses = {
+                    'ru': `🐯 <strong>TIGRAN AI анализирует ваш запрос:</strong><br><br>
+                    "<em>${message}</em>"<br><br>
+                    Я понимаю ваш вопрос! Могу помочь с:<br>
+                    • Текстами и переводами<br>
+                    • Программированием<br>
+                    • Математикой<br>
+                    • Наукой и образованием<br>
+                    • Бизнес-задачами<br><br>
+                    <strong>Уточните запрос для более точного ответа!</strong> 🎯`,
+                    'en': `🐯 <strong>TIGRAN AI analyzes your request:</strong><br><br>
+                    "<em>${message}</em>"<br><br>
+                    I understand your question! I can help with:<br>
+                    • Texts and translations<br>
+                    • Programming<br>
+                    • Mathematics<br>
+                    • Science and education<br>
+                    • Business tasks<br><br>
+                    <strong>Specify your request for a more accurate answer!</strong> 🎯`,
+                    'hy': `🐯 <strong>TIGRAN AI-ն վերլուծում է ձեր հարցումը:</strong><br><br>
+                    "<em>${message}</em>"<br><br>
+                    Ես հասկանում եմ ձեր հարցը: Կարող եմ օգնել հետևյալով.<br>
+                    • Տեքստեր և թարգմանություններ<br>
+                    • Ծրագրավորում<br>
+                    • Մաթեմատիկա<br>
+                    • Գիտություն և կրթություն<br>
+                    • Բիզնես առաջադրանքներ<br><br>
+                    <strong>Պարզաբանեք հարցումն ավելի ճշգրիտ պատասխանի համար:</strong> 🎯`
+                };
+                
+                return responses[lang] || responses['en'];
+            }
+        }
+
+        // Создаем TIGRAN AI
+        const tigranAI = new TigranAI();
+
+        // Функции интерфейса
+        async function processAIRequest() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+            showThinkingIndicator();
+
+            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
+
+            const response = tigranAI.getResponse(message);
+            removeThinkingIndicator();
+            addMessage(response, 'ai');
+        }
+
+        function showThinkingIndicator() {
+            const chatArea = document.getElementById('chatArea');
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'message ai-thinking';
+            thinkingDiv.id = 'thinkingIndicator';
+            thinkingDiv.innerHTML = `
+                <div class="neural-activity">
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                    <div class="neuron"></div>
+                </div>
+                TIGRAN AI обрабатывает запрос...
+            `;
+            chatArea.appendChild(thinkingDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function removeThinkingIndicator() {
+            const thinking = document.getElementById('thinkingIndicator');
+            if (thinking) thinking.remove();
+        }
+
+        function addMessage(text, type) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type === 'user' ? 'user-message' : ''}`;
+            messageDiv.innerHTML = text;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function askAI(question) {
+            document.getElementById('aiInput').value = question;
+            processAIRequest();
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                processAIRequest();
+            }
+        }
+
+        window.addEventListener('load', () => {
+            document.getElementById('aiInput').focus();
+        });
+    </script>
+</body>
+</html>
