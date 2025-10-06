@@ -50,8 +50,17 @@
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #00ff88;
-            text-shadow: 0 0 10px #00ff88;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
         }
 
         .nav-links {
@@ -63,10 +72,17 @@
             color: #ffffff;
             text-decoration: none;
             transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s;
         }
 
         .nav-links a:hover {
-            color: #00ff88;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            animation: rainbow 2s ease infinite;
+            color: #000;
+            font-weight: bold;
         }
 
         .contact-btn {
@@ -93,9 +109,11 @@
         .hero h1 {
             font-size: 3.5rem;
             margin-bottom: 1rem;
-            background: linear-gradient(45deg, #00ff88, #00ccff);
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
         }
 
         .hero p {
@@ -103,6 +121,26 @@
             max-width: 600px;
             margin: 0 auto 2rem;
             color: #cccccc;
+        }
+
+        .rainbow-btn {
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            color: #000;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            animation: rainbow 3s ease infinite;
+            transition: transform 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .rainbow-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
         }
 
         .features {
@@ -119,17 +157,68 @@
             padding: 2rem;
             border-radius: 15px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
             transition: transform 0.3s;
         }
 
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            border-radius: 17px;
+            z-index: -1;
+            animation: rainbow 4s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px) scale(1.02);
         }
 
         .feature-card h3 {
-            color: #00ff88;
             margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
+        }
+
+        .page-section {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+
+        .page-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            border-radius: 22px;
+            z-index: -1;
+            animation: rainbow 5s ease infinite;
         }
 
         .footer {
@@ -137,6 +226,14 @@
             padding: 2rem;
             text-align: center;
             margin-top: 4rem;
+        }
+
+        .rainbow-text {
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
         }
 
         @media (max-width: 768px) {
@@ -169,26 +266,54 @@
     <section class="hero">
         <h1>Инновационная образовательная платформа</h1>
         <p>Передовые технологии для современного образования. Искусственный интеллект, блокчейн и машинное обучение в одном решении.</p>
-        <a href="https://t.me/ARMFFSOFTVIP" class="contact-btn">Связаться через Telegram</a>
+        <button class="rainbow-btn">Начать обучение</button>
     </section>
 
-    <section class="features">
-        <div class="feature-card">
-            <h3>AI Аналитика</h3>
-            <p>Система искусственного интеллекта анализирует успеваемость и предлагает персональные рекомендации</p>
+    <section id="about" class="page-section">
+        <h2 class="rainbow-text">О проекте</h2>
+        <p>Quantum Campus - это революционная платформа, объединяющая передовые технологии для создания образовательной среды будущего.</p>
+        <div class="features">
+            <div class="feature-card">
+                <h3>Наша миссия</h3>
+                <p>Сделать образование доступным, интерактивным и эффективным с помощью современных технологий.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Технологии</h3>
+                <p>Используем AI, блокчейн, VR/AR и облачные вычисления для создания уникального опыта.</p>
+            </div>
         </div>
-        <div class="feature-card">
-            <h3>Блокчейн безопасность</h3>
-            <p>Технология блокчейн обеспечивает защиту данных и прозрачность образовательного процесса</p>
+    </section>
+
+    <section id="features" class="page-section">
+        <h2 class="rainbow-text">Возможности</h2>
+        <div class="features">
+            <div class="feature-card">
+                <h3>AI Аналитика</h3>
+                <p>Система искусственного интеллекта анализирует успеваемость и предлагает персональные рекомендации</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
+            <div class="feature-card">
+                <h3>Блокчейн безопасность</h3>
+                <p>Технология блокчейн обеспечивает защиту данных и прозрачность образовательного процесса</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
+            <div class="feature-card">
+                <h3>3D Визуализация</h3>
+                <p>Интерактивные 3D модели для лучшего понимания сложных концепций и теорий</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
+            <div class="feature-card">
+                <h3>Облачные вычисления</h3>
+                <p>Мощные облачные серверы для обработки данных и сложных вычислений</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
         </div>
-        <div class="feature-card">
-            <h3>3D Визуализация</h3>
-            <p>Интерактивные 3D модели для лучшего понимания сложных концепций и теорий</p>
-        </div>
-        <div class="feature-card">
-            <h3>Облачные вычисления</h3>
-            <p>Мощные облачные серверы для обработки данных и сложных вычислений</p>
-        </div>
+    </section>
+
+    <section id="contact" class="page-section">
+        <h2>Контакты</h2>
+        <p>Свяжитесь с нами для сотрудничества или получения дополнительной информации</p>
+        <p>Telegram: <a href="https://t.me/ARMFFSOFTVIP" style="color: #00ff88;">@ARMFFSOFTVIP</a></p>
     </section>
 
     <footer class="footer">
@@ -213,7 +338,7 @@
                 this.size = Math.random() * 2 + 1;
                 this.speedX = Math.random() * 1 - 0.5;
                 this.speedY = Math.random() * 1 - 0.5;
-                this.color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+                this.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
             }
 
             update() {
@@ -252,13 +377,11 @@
         initParticles();
         animateParticles();
 
-        // Адаптивность
         window.addEventListener('resize', function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
 
-        // Плавная прокрутка
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
