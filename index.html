@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Campus Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <style>
         * {
             margin: 0;
@@ -136,6 +138,7 @@
             transition: transform 0.3s;
             border: none;
             cursor: pointer;
+            margin: 0.5rem;
         }
 
         .rainbow-btn:hover {
@@ -221,6 +224,132 @@
             animation: rainbow 5s ease infinite;
         }
 
+        /* 3D Globe Styles */
+        .globe-container {
+            width: 100%;
+            height: 500px;
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        #globeCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .globe-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* AI Chat Styles */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            border-image-slice: 1;
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .chat-header {
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            animation: rainbow 3s ease infinite;
+            padding: 1rem;
+            border-radius: 13px 13px 0 0;
+            color: #000;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .message {
+            padding: 0.8rem;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: #000;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            align-self: flex-start;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .chat-input button {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: #000;
+            cursor: pointer;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            animation: rainbow 3s ease infinite;
+            border: none;
+            border-radius: 50%;
+            color: #000;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .footer {
             background: rgba(0, 0, 0, 0.8);
             padding: 2rem;
@@ -245,6 +374,11 @@
             .hero h1 {
                 font-size: 2.5rem;
             }
+            
+            .chat-container {
+                width: 300px;
+                height: 400px;
+            }
         }
     </style>
 </head>
@@ -257,6 +391,7 @@
             <nav class="nav-links">
                 <a href="#about">О проекте</a>
                 <a href="#features">Возможности</a>
+                <a href="#global">Глобальная сеть</a>
                 <a href="#contact">Контакты</a>
             </nav>
             <a href="https://t.me/ARMFFSOFTVIP" class="contact-btn">Contact in Telegram</a>
@@ -266,7 +401,8 @@
     <section class="hero">
         <h1>Инновационная образовательная платформа</h1>
         <p>Передовые технологии для современного образования. Искусственный интеллект, блокчейн и машинное обучение в одном решении.</p>
-        <button class="rainbow-btn">Начать обучение</button>
+        <button class="rainbow-btn" onclick="startAI()">Пообщаться с AI</button>
+        <button class="rainbow-btn" onclick="showGlobe()">3D Карта кампусов</button>
     </section>
 
     <section id="about" class="page-section">
@@ -280,6 +416,18 @@
             <div class="feature-card">
                 <h3>Технологии</h3>
                 <p>Используем AI, блокчейн, VR/AR и облачные вычисления для создания уникального опыта.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="global" class="page-section">
+        <h2 class="rainbow-text">Глобальная сеть кампусов</h2>
+        <p>Наша образовательная сеть охватывает весь мир. Вращайте глобус для просмотра филиалов.</p>
+        <div class="globe-container">
+            <canvas id="globeCanvas"></canvas>
+            <div class="globe-info">
+                <h4>Активные кампусы: <span id="campusCount">12</span></h4>
+                <p>Студентов онлайн: <span id="studentsOnline">2,847</span></p>
             </div>
         </div>
     </section>
@@ -315,6 +463,25 @@
         <p>Свяжитесь с нами для сотрудничества или получения дополнительной информации</p>
         <p>Telegram: <a href="https://t.me/ARMFFSOFTVIP" style="color: #00ff88;">@ARMFFSOFTVIP</a></p>
     </section>
+
+    <!-- AI Chat Interface -->
+    <button class="chat-toggle" onclick="toggleChat()">🤖</button>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <span>AI Помощник</span>
+            <button onclick="toggleChat()" style="background: none; border: none; color: #000; cursor: pointer;">✕</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Привет! Я AI-помощник Quantum Campus. Чем могу помочь?
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Задайте вопрос...">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
 
     <footer class="footer">
         <p>© 2024 Quantum Campus Network. Все права защищены.</p>
@@ -377,9 +544,170 @@
         initParticles();
         animateParticles();
 
+        // 3D Globe
+        let globeScene, globeCamera, globeRenderer, globe;
+
+        function initGlobe() {
+            const globeCanvas = document.getElementById('globeCanvas');
+            
+            globeScene = new THREE.Scene();
+            globeCamera = new THREE.PerspectiveCamera(75, globeCanvas.offsetWidth / globeCanvas.offsetHeight, 0.1, 1000);
+            globeRenderer = new THREE.WebGLRenderer({ canvas: globeCanvas, antialias: true });
+            globeRenderer.setSize(globeCanvas.offsetWidth, globeCanvas.offsetHeight);
+
+            // Создаем земной шар
+            const geometry = new THREE.SphereGeometry(5, 32, 32);
+            const textureLoader = new THREE.TextureLoader();
+            const material = new THREE.MeshPhongMaterial({
+                map: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg'),
+                bumpMap: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_normal_2048.jpg'),
+                bumpScale: 0.05,
+                specularMap: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_specular_2048.jpg'),
+                specular: new THREE.Color(0x333333)
+            });
+
+            globe = new THREE.Mesh(geometry, material);
+            globeScene.add(globe);
+
+            // Добавляем освещение
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            globeScene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 3, 5);
+            globeScene.add(directionalLight);
+
+            // Позиция камеры
+            globeCamera.position.z = 15;
+
+            // Добавляем точки кампусов
+            addCampuses();
+
+            animateGlobe();
+        }
+
+        function addCampuses() {
+            const campuses = [
+                { lat: 55.7558, lng: 37.6173, name: "Москва" }, // Москва
+                { lat: 40.7128, lng: -74.0060, name: "Нью-Йорк" }, // Нью-Йорк
+                { lat: 51.5074, lng: -0.1278, name: "Лондон" }, // Лондон
+                { lat: 35.6762, lng: 139.6503, name: "Токио" }, // Токио
+                { lat: 48.8566, lng: 2.3522, name: "Париж" }, // Париж
+                { lat: 52.5200, lng: 13.4050, name: "Берлин" }, // Берлин
+                { lat: 37.7749, lng: -122.4194, name: "Сан-Франциско" }, // Сан-Франциско
+                { lat: 19.4326, lng: -99.1332, name: "Мехико" }, // Мехико
+                { lat: -33.8688, lng: 151.2093, name: "Сидней" }, // Сидней
+                { lat: 22.3193, lng: 114.1694, name: "Гонконг" }, // Гонконг
+                { lat: 1.3521, lng: 103.8198, name: "Сингапур" }, // Сингапур
+                { lat: 25.276987, lng: 55.296249, name: "Дубай" } // Дубай
+            ];
+
+            campuses.forEach(campus => {
+                const phi = (90 - campus.lat) * (Math.PI / 180);
+                const theta = (campus.lng + 180) * (Math.PI / 180);
+
+                const x = -(6 * Math.sin(phi) * Math.cos(theta));
+                const y = (6 * Math.cos(phi));
+                const z = (6 * Math.sin(phi) * Math.sin(theta));
+
+                const pointGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const pointMaterial = new THREE.MeshBasicMaterial({ 
+                    color: new THREE.Color().setHSL(Math.random(), 0.8, 0.6) 
+                });
+                const point = new THREE.Mesh(pointGeometry, pointMaterial);
+                point.position.set(x, y, z);
+                globeScene.add(point);
+            });
+
+            document.getElementById('campusCount').textContent = campuses.length;
+            document.getElementById('studentsOnline').textContent = Math.floor(Math.random() * 2000 + 1000).toLocaleString();
+        }
+
+        function animateGlobe() {
+            requestAnimationFrame(animateGlobe);
+            globe.rotation.y += 0.002;
+            globeRenderer.render(globeScene, globeCamera);
+        }
+
+        function showGlobe() {
+            document.getElementById('global').scrollIntoView({ behavior: 'smooth' });
+            if (!globeScene) {
+                initGlobe();
+            }
+        }
+
+        // AI Chat System
+        const aiResponses = {
+            'привет': 'Привет! Я AI-помощник Quantum Campus. Расскажу о наших возможностях и помогу с выбором курсов!',
+            'курс': 'У нас есть курсы по: AI, блокчейн, веб-разработка, Data Science. Какой направление интересует?',
+            'цена': 'Стоимость курсов от 5000 руб./мес. Есть рассрочка и гранты для талантливых студентов!',
+            'контакт': 'Свяжитесь с нами в Telegram: @ARMFFSOFTVIP - ответим на все вопросы!',
+            'помощь': 'Могу рассказать о курсах, ценах, процессе обучения. Что вас интересует?',
+            'ai': 'Курсы по AI включают: машинное обучение, нейросети, компьютерное зрение. Продолжительность 6 месяцев.',
+            'блокчейн': 'Блокчейн курс: смарт-контракты, DeFi, NFT разработка. Практика на реальных проектах!',
+            'default': 'Интересный вопрос! Уточните, пожалуйста, или свяжитесь с консультантом: @ARMFFSOFTVIP'
+        };
+
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.style.display = chatContainer.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function startAI() {
+            toggleChat();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.toLowerCase().trim();
+            
+            if (message === '') return;
+
+            // Добавляем сообщение пользователя
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Имитируем задержку ответа AI
+            setTimeout(() => {
+                let response = aiResponses.default;
+                
+                for (const [key, value] of Object.entries(aiResponses)) {
+                    if (message.includes(key)) {
+                        response = value;
+                        break;
+                    }
+                }
+                
+                addMessage(response, 'bot');
+            }, 1000);
+        }
+
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Обработка Enter в чате
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
         window.addEventListener('resize', function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            
+            if (globeRenderer) {
+                const globeCanvas = document.getElementById('globeCanvas');
+                globeCamera.aspect = globeCanvas.offsetWidth / globeCanvas.offsetHeight;
+                globeCamera.updateProjectionMatrix();
+                globeRenderer.setSize(globeCanvas.offsetWidth, globeCanvas.offsetHeight);
+            }
         });
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -389,6 +717,11 @@
                     behavior: 'smooth'
                 });
             });
+        });
+
+        // Инициализация глобуса при загрузке
+        window.addEventListener('load', function() {
+            setTimeout(initGlobe, 1000);
         });
     </script>
 </body>
