@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Campus Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            animation: rainbow 2s ease infinite;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .contact-btn {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: #000;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .hero {
+            margin-top: 100px;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            color: #cccccc;
+        }
+
+        .rainbow-btn {
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            color: #000;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            animation: rainbow 3s ease infinite;
+            transition: transform 0.3s;
+            border: none;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+
+        .rainbow-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            border-radius: 17px;
+            z-index: -1;
+            animation: rainbow 4s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
+        }
+
+        .page-section {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+
+        .page-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            border-radius: 22px;
+            z-index: -1;
+            animation: rainbow 5s ease infinite;
+        }
+
+        /* 3D Globe Styles */
+        .globe-container {
+            width: 100%;
+            height: 500px;
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        #globeCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .globe-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .rainbow-text {
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc66ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas class="particles-bg" id="particles"></canvas>
+    
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">Quantum Campus</div>
+            <nav class="nav-links">
+                <a href="#about">О проекте</a>
+                <a href="#features">Возможности</a>
+                <a href="#global">Глобальная сеть</a>
+                <a href="#contact">Контакты</a>
+            </nav>
+            <a href="https://t.me/ARMFFSOFTVIP" class="contact-btn">Contact in Telegram</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Инновационная образовательная платформа</h1>
+        <p>Передовые технологии для современного образования. Искусственный интеллект, блокчейн и машинное обучение в одном решении.</p>
+        <button class="rainbow-btn" onclick="showGlobe()">3D Карта кампусов</button>
+        <a href="tigran-ai.html" class="rainbow-btn">🐯 TIGRAN AI Чат</a>
+    </section>
+
+    <section id="about" class="page-section">
+        <h2 class="rainbow-text">О проекте</h2>
+        <p>Quantum Campus - это революционная платформа, объединяющая передовые технологии для создания образовательной среды будущего.</p>
+        <div class="features">
+            <div class="feature-card">
+                <h3>Наша миссия</h3>
+                <p>Сделать образование доступным, интерактивным и эффективным с помощью современных технологий.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Технологии</h3>
+                <p>Используем AI, блокчейн, VR/AR и облачные вычисления для создания уникального опыта.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="global" class="page-section">
+        <h2 class="rainbow-text">Глобальная сеть кампусов</h2>
+        <p>Наша образовательная сеть охватывает весь мир. Вращайте глобус для просмотра филиалов.</p>
+        <div class="globe-container">
+            <canvas id="globeCanvas"></canvas>
+            <div class="globe-info">
+                <h4>Активные кампусы: <span id="campusCount">12</span></h4>
+                <p>Студентов онлайн: <span id="studentsOnline">2,847</span></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="page-section">
+        <h2 class="rainbow-text">Возможности</h2>
+        <div class="features">
+            <div class="feature-card">
+                <h3>AI Аналитика</h3>
+                <p>Система искусственного интеллекта анализирует успеваемость и предлагает персональные рекомендации</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
+            <div class="feature-card">
+                <h3>Блокчейн безопасность</h3>
+                <p>Технология блокчейн обеспечивает защиту данных и прозрачность образовательного процесса</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
+            <div class="feature-card">
+                <h3>3D Визуализация</h3>
+                <p>Интерактивные 3D модели для лучшего понимания сложных концепций и теорий</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
+            <div class="feature-card">
+                <h3>Облачные вычисления</h3>
+                <p>Мощные облачные серверы для обработки данных и сложных вычислений</p>
+                <button class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Подробнее</button>
+            </div>
+            <div class="feature-card">
+                <h3>🐯 TIGRAN AI Assistant</h3>
+                <p>Мультиязычный AI с полным спектром возможностей. Общается на русском, английском, армянском и других языках!</p>
+                <a href="tigran-ai.html" class="rainbow-btn" style="margin-top: 1rem; padding: 0.5rem 1rem; text-decoration: none; display: inline-block;">
+                    🚀 Запустить TIGRAN AI
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="page-section">
+        <h2>Контакты</h2>
+        <p>Свяжитесь с нами для сотрудничества или получения дополнительной информации</p>
+        <p>Telegram: <a href="https://t.me/ARMFFSOFTVIP" style="color: #00ff88;">@ARMFFSOFTVIP</a></p>
+    </section>
+
+    <footer class="footer">
+        <p>© 2024 Quantum Campus Network. Все права защищены.</p>
+        <p>По вопросам сотрудничества: <a href="https://t.me/ARMFFSOFTVIP" style="color: #00ff88;">Telegram @ARMFFSOFTVIP</a></p>
+    </footer>
+
+    <script>
+        // Частицы на фоне
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let particle of particles) {
+                particle.update();
+                particle.draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // 3D Globe
+        let globeScene, globeCamera, globeRenderer, globe;
+
+        function initGlobe() {
+            const globeCanvas = document.getElementById('globeCanvas');
+            
+            globeScene = new THREE.Scene();
+            globeCamera = new THREE.PerspectiveCamera(75, globeCanvas.offsetWidth / globeCanvas.offsetHeight, 0.1, 1000);
+            globeRenderer = new THREE.WebGLRenderer({ canvas: globeCanvas, antialias: true });
+            globeRenderer.setSize(globeCanvas.offsetWidth, globeCanvas.offsetHeight);
+
+            // Создаем земной шар
+            const geometry = new THREE.SphereGeometry(5, 32, 32);
+            const textureLoader = new THREE.TextureLoader();
+            const material = new THREE.MeshPhongMaterial({
+                map: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg'),
+                bumpMap: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_normal_2048.jpg'),
+                bumpScale: 0.05,
+                specularMap: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_specular_2048.jpg'),
+                specular: new THREE.Color(0x333333)
+            });
+
+            globe = new THREE.Mesh(geometry, material);
+            globeScene.add(globe);
+
+            // Добавляем освещение
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            globeScene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 3, 5);
+            globeScene.add(directionalLight);
+
+            // Позиция камеры
+            globeCamera.position.z = 15;
+
+            // Добавляем точки кампусов
+            addCampuses();
+
+            animateGlobe();
+        }
+
+        function addCampuses() {
+            const campuses = [
+                { lat: 55.7558, lng: 37.6173, name: "Москва" },
+                { lat: 40.7128, lng: -74.0060, name: "Нью-Йорк" },
+                { lat: 51.5074, lng: -0.1278, name: "Лондон" },
+                { lat: 35.6762, lng: 139.6503, name: "Токио" },
+                { lat: 48.8566, lng: 2.3522, name: "Париж" },
+                { lat: 52.5200, lng: 13.4050, name: "Берлин" },
+                { lat: 37.7749, lng: -122.4194, name: "Сан-Франциско" },
+                { lat: 19.4326, lng: -99.1332, name: "Мехико" },
+                { lat: -33.8688, lng: 151.2093, name: "Сидней" },
+                { lat: 22.3193, lng: 114.1694, name: "Гонконг" },
+                { lat: 1.3521, lng: 103.8198, name: "Сингапур" },
+                { lat: 25.276987, lng: 55.296249, name: "Дубай" }
+            ];
+
+            campuses.forEach(campus => {
+                const phi = (90 - campus.lat) * (Math.PI / 180);
+                const theta = (campus.lng + 180) * (Math.PI / 180);
+
+                const x = -(6 * Math.sin(phi) * Math.cos(theta));
+                const y = (6 * Math.cos(phi));
+                const z = (6 * Math.sin(phi) * Math.sin(theta));
+
+                const pointGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const pointMaterial = new THREE.MeshBasicMaterial({ 
+                    color: new THREE.Color().setHSL(Math.random(), 0.8, 0.6) 
+                });
+                const point = new THREE.Mesh(pointGeometry, pointMaterial);
+                point.position.set(x, y, z);
+                globeScene.add(point);
+            });
+
+            document.getElementById('campusCount').textContent = campuses.length;
+            document.getElementById('studentsOnline').textContent = Math.floor(Math.random() * 2000 + 1000).toLocaleString();
+        }
+
+        function animateGlobe() {
+            requestAnimationFrame(animateGlobe);
+            globe.rotation.y += 0.002;
+            globeRenderer.render(globeScene, globeCamera);
+        }
+
+        function showGlobe() {
+            document.getElementById('global').scrollIntoView({ behavior: 'smooth' });
+            if (!globeScene) {
+                initGlobe();
+            }
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            if (globeRenderer) {
+                const globeCanvas = document.getElementById('globeCanvas');
+                globeCamera.aspect = globeCanvas.offsetWidth / globeCanvas.offsetHeight;
+                globeCamera.updateProjectionMatrix();
+                globeRenderer.setSize(globeCanvas.offsetWidth, globeCanvas.offsetHeight);
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Инициализация глобуса при загрузке
+        window.addEventListener('load', function() {
+            setTimeout(initGlobe, 1000);
+        });
+    </script>
+</body>
+</html>
