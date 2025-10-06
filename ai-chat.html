@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum AI - Супер-интеллект</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/brain.js@2.0.0-beta/dist/browser.min.js"></script>
+    <title>Quantum AI - Как Колин</title>
     <style>
         * {
             margin: 0;
@@ -37,16 +35,6 @@
             overflow: hidden;
         }
 
-        .neural-network-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
         .terminal-header {
             background: #00ff88;
             color: #000;
@@ -56,10 +44,6 @@
             align-items: center;
             font-weight: bold;
             border-bottom: 2px solid #00cc66;
-        }
-
-        .neural-stats {
-            font-size: 0.9rem;
         }
 
         .chat-area {
@@ -77,6 +61,7 @@
             max-width: 90%;
             border-left: 3px solid #00ff88;
             background: rgba(0, 255, 136, 0.05);
+            line-height: 1.5;
         }
 
         .user-message {
@@ -154,39 +139,6 @@
             transform: translateY(-2px);
         }
 
-        .code-block {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 5px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-            overflow-x: auto;
-        }
-
-        .code-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            color: #3399ff;
-        }
-
-        .copy-btn {
-            background: #3399ff;
-            color: #000;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        pre {
-            margin: 0;
-            white-space: pre-wrap;
-            color: #00ff88;
-        }
-
         .suggestions {
             display: flex;
             flex-wrap: wrap;
@@ -211,485 +163,219 @@
             border-color: #00ff88;
             transform: translateY(-2px);
         }
-
-        .neural-progress {
-            height: 3px;
-            background: linear-gradient(90deg, #00ff88, #3399ff, #ff00ff);
-            background-size: 300% 100%;
-            animation: gradientMove 2s infinite;
-            margin-top: 0.5rem;
-        }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 50% }
-            50% { background-position: 100% 50% }
-            100% { background-position: 0% 50% }
-        }
     </style>
 </head>
 <body>
-    <canvas class="neural-network-bg" id="neuralCanvas"></canvas>
-    
     <div class="ai-container">
         <div class="terminal-header">
-            <div>🧠 QUANTUM NEURAL AI v2.0 | Точность: 99.8%</div>
-            <div class="neural-stats">Нейроны: 1.2M | Слои: 128 | Обучение: 98.5%</div>
+            <div>🧠 QUANTUM AI - ОБЩАЕТСЯ КАК КОЛИН</div>
+            <div>Отвечает на ВСЕ вопросы 💪</div>
         </div>
 
         <div class="suggestions">
-            <div class="suggestion" onclick="askAI('Создай React компонент интернет-магазина')">🛒 React магазин</div>
-            <div class="suggestion" onclick="askAI('Напиши нейросеть на Python для распознавания изображений')">🤖 Python нейросеть</div>
-            <div class="suggestion" onclick="askAI('Сгенерируй 3D сцену с Three.js')">🎮 Three.js 3D</div>
-            <div class="suggestion" onclick="askAI('Создай блокчейн смарт-контракт')">⛓️ Блокчейн контракт</div>
-            <div class="suggestion" onclick="askAI('Оптимизируй этот SQL запрос')">📊 SQL оптимизация</div>
+            <div class="suggestion" onclick="askAI('Привет брат')">👋 Привет</div>
+            <div class="suggestion" onclick="askAI('Как дела?')">💬 Как дела?</div>
+            <div class="suggestion" onclick="askAI('Помоги с кодом')">💻 Код</div>
+            <div class="suggestion" onclick="askAI('Что нового?')">🚀 Новости</div>
+            <div class="suggestion" onclick="askAI('Расскажи шутку')">😄 Шутка</div>
         </div>
 
         <div class="chat-area" id="chatArea">
             <div class="message">
-                <strong>⚡ QUANTUM NEURAL AI АКТИВИРОВАН</strong><br><br>
-                🔬 <strong>Архитектура:</strong> Transformer-based Neural Network<br>
-                💾 <strong>Память:</strong> 12GB контекстного окна<br>
-                🚀 <strong>Возможности:</strong><br>
-                • Генерация сложного кода<br>
-                • Анализ и оптимизация<br>
-                • Создание архитектур<br>
-                • Решение алгоритмических задач<br><br>
-                <div class="neural-progress"></div>
+                <strong>🤖 Quantum AI активирован в режиме "Колин"</strong><br><br>
+                Привет брат! Я твой AI помощник, который общается так же как Колин.<br>
+                Задавай любой вопрос - про код, технологии, жизнь, или просто поболтаем!<br><br>
+                🚀 <strong>Готов к общению!</strong>
             </div>
         </div>
 
         <div class="input-area">
-            <input type="text" class="ai-input" id="aiInput" placeholder="Введите запрос для нейросети..." onkeypress="handleEnter(event)">
-            <button class="send-btn" onclick="processAIRequest()">ВЫПОЛНИТЬ</button>
+            <input type="text" class="ai-input" id="aiInput" placeholder="Напиши любой вопрос..." onkeypress="handleEnter(event)">
+            <button class="send-btn" onclick="processAIRequest()">ОТПРАВИТЬ</button>
         </div>
     </div>
 
     <script>
-        // Имитация нейросети в браузере
-        class QuantumNeuralAI {
-            constructor() {
-                this.model = null;
-                this.initNeuralNetwork();
-            }
-
-            async initNeuralNetwork() {
-                // Имитация инициализации TensorFlow модели
-                console.log("🧠 Инициализация нейросети...");
-                await this.simulateLoading();
-                console.log("✅ Нейросеть готова к работе");
-            }
-
-            async simulateLoading() {
-                return new Promise(resolve => setTimeout(resolve, 1000));
-            }
-
-            generateResponse(prompt) {
-                const responses = this.getAIResponses();
-                const lowerPrompt = prompt.toLowerCase();
+        // AI который отвечает как Колин
+        class ColinAI {
+            getResponse(message) {
+                const lowerMessage = message.toLowerCase();
                 
-                // Поиск лучшего ответа
-                for (const [key, response] of Object.entries(responses)) {
-                    if (lowerPrompt.includes(key)) {
-                        return response;
-                    }
+                // Приветствия
+                if (lowerMessage.includes('привет') || lowerMessage.includes('здравств') || lowerMessage.includes('hi') || lowerMessage.includes('hello')) {
+                    return this.getGreetingResponse();
                 }
-
-                // Генерация умного ответа
-                return this.generateSmartResponse(prompt);
+                
+                // Как дела
+                if (lowerMessage.includes('как дел') || lowerMessage.includes('how are')) {
+                    return "Да нормально брат! Код пишу, сайты делаю. Сам как? 💻";
+                }
+                
+                // Вопросы про код
+                if (lowerMessage.includes('код') || lowerMessage.includes('программир') || lowerMessage.includes('html') || lowerMessage.includes('css') || lowerMessage.includes('javascript') || lowerMessage.includes('react')) {
+                    return this.getCodeResponse(lowerMessage);
+                }
+                
+                // Технологии
+                if (lowerMessage.includes('технолог') || lowerMessage.includes('ai') || lowerMessage.includes('нейросет') || lowerMessage.includes('блокчейн')) {
+                    return this.getTechResponse(lowerMessage);
+                }
+                
+                // Шутки
+                if (lowerMessage.includes('шутк') || lowerMessage.includes('смешн') || lowerMessage.includes('юмор')) {
+                    return this.getJokeResponse();
+                }
+                
+                // Что нового
+                if (lowerMessage.includes('новое') || lowerMessage.includes('новост') || lowerMessage.includes('what new')) {
+                    return "Да вот, этот AI чат доделываю! Получается охуенно, сам видишь 😎 Еще пару проектов замутил, потом покажу.";
+                }
+                
+                // Помощь
+                if (lowerMessage.includes('помог') || lowerMessage.includes('help') || lowerMessage.includes('нужна помощ')) {
+                    return "Конечно брат, помогу! Что именно нужно? Могу с кодом помочь, с идеями, или просто совет дать 💪";
+                }
+                
+                // Любые другие вопросы
+                return this.getDefaultResponse();
             }
 
-            getAIResponses() {
-                return {
-                    'react': this.getReactCode(),
-                    'python': this.getPythonCode(),
-                    'нейросеть': this.getNeuralNetworkCode(),
-                    'three.js': this.getThreeJSCode(),
-                    'блокчейн': this.getBlockchainCode(),
-                    'sql': this.getSQLCode(),
-                    'javascript': this.getJSCode(),
-                    'алгоритм': this.getAlgorithmCode()
-                };
+            getGreetingResponse() {
+                const greetings = [
+                    "Привет брат! Рад тебя видеть! Как сам? 🤗",
+                    "Здарова! Чё как жизнь? Готов к работе! 🚀", 
+                    "Приветствую! Вижу ты зашёл пообщаться - отлично! 😎",
+                    "Йоу! Quantum AI на связи! Задавай вопросы брат 💪"
+                ];
+                return greetings[Math.floor(Math.random() * greetings.length)];
             }
 
-            getReactCode() {
-                return {
-                    text: "🛒 **React компонент интернет-магазина с хуками и контекстом**",
-                    code: `import React, { useState, useContext, createContext } from 'react';
+            getCodeResponse(message) {
+                if (message.includes('react')) {
+                    return `Брат, React - это охуенно! Вот тебе простой компонент:
 
-// Контекст корзины
-const CartContext = createContext();
+\`\`\`jsx
+import React, { useState } from 'react';
 
-export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);
-    
-    const addToCart = (product) => {
-        setCart(prev => {
-            const existing = prev.find(item => item.id === product.id);
-            if (existing) {
-                return prev.map(item => 
-                    item.id === product.id 
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-                );
-            }
-            return [...prev, { ...product, quantity: 1 }];
-        });
-    };
-
-    const removeFromCart = (productId) => {
-        setCart(prev => prev.filter(item => item.id !== productId));
-    };
-
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-    return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, total }}>
-            {children}
-        </CartContext.Provider>
-    );
-};
-
-// Компонент продукта
-const ProductCard = ({ product }) => {
-    const { addToCart } = useContext(CartContext);
+const CoolComponent = () => {
+    const [count, setCount] = useState(0);
     
     return (
-        <div className="product-card">
-            <img src={product.image} alt={product.name} />
-            <h3>{product.name}</h3>
-            <p>${product.price}</p>
-            <button onClick={() => addToCart(product)}>
-                Добавить в корзину
+        <div style={{ padding: '20px', background: '#1a1a1a', color: '#00ff88' }}>
+            <h1>Счётчик: {count}</h1>
+            <button onClick={() => setCount(count + 1)} style={{
+                background: '#00ff88', 
+                color: '#000',
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer'
+            }}>
+                Кликни меня!
             </button>
         </div>
     );
 };
+\`\`\`
 
-// Главный компонент
-const App = () => (
-    <CartProvider>
-        <div className="app">
-            <header>
-                <h1>Quantum Store</h1>
-                <CartIndicator />
-            </header>
-            <ProductGrid />
-        </div>
-    </CartProvider>
-);`
-                };
-            }
-
-            getPythonCode() {
-                return {
-                    text: "🤖 **Нейросеть на Python с TensorFlow для классификации изображений**",
-                    code: `import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-import numpy as np
-import matplotlib.pyplot as plt
-
-class AdvancedCNN:
-    def __init__(self, input_shape, num_classes):
-        self.input_shape = input_shape
-        self.num_classes = num_classes
-        self.model = self._build_model()
-    
-    def _build_model(self):
-        model = keras.Sequential([
-            # Сверточные слои
-            layers.Conv2D(32, (3, 3), activation='relu', input_shape=self.input_shape),
-            layers.MaxPooling2D((2, 2)),
-            layers.Conv2D(64, (3, 3), activation='relu'),
-            layers.MaxPooling2D((2, 2)),
-            layers.Conv2D(128, (3, 3), activation='relu'),
-            
-            # Полносвязные слои
-            layers.Flatten(),
-            layers.Dense(512, activation='relu'),
-            layers.Dropout(0.5),
-            layers.Dense(256, activation='relu'),
-            layers.Dropout(0.3),
-            layers.Dense(self.num_classes, activation='softmax')
-        ])
-        
-        model.compile(
-            optimizer='adam',
-            loss='categorical_crossentropy',
-            metrics=['accuracy']
-        )
-        
-        return model
-    
-    def train(self, x_train, y_train, x_val, y_val, epochs=50):
-        history = self.model.fit(
-            x_train, y_train,
-            epochs=epochs,
-            validation_data=(x_val, y_val),
-            batch_size=32,
-            callbacks=[
-                keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True),
-                keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=3)
-            ]
-        )
-        return history
-
-# Использование
-if __name__ == "__main__":
-    # Пример данных (CIFAR-10)
-    (x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
-    
-    # Нормализация
-    x_train = x_train.astype('float32') / 255.0
-    x_test = x_test.astype('float32') / 255.0
-    
-    # One-hot encoding
-    y_train = keras.utils.to_categorical(y_train, 10)
-    y_test = keras.utils.to_categorical(y_test, 10)
-    
-    # Создание и обучение модели
-    cnn = AdvancedCNN((32, 32, 3), 10)
-    history = cnn.train(x_train, y_train, x_test, y_test)
-    
-    print("✅ Модель обучена с точностью:", max(history.history['val_accuracy']))`
-                };
-            }
-
-            getNeuralNetworkCode() {
-                return {
-                    text: "🧠 **Реализация нейросети с нуля на NumPy**",
-                    code: `import numpy as np
-import matplotlib.pyplot as plt
-
-class NeuralNetwork:
-    def __init__(self, layers):
-        self.layers = layers
-        self.parameters = {}
-        self.gradients = {}
-        self.initialize_parameters()
-    
-    def initialize_parameters(self):
-        for l in range(1, len(self.layers)):
-            self.parameters[f'W{l}'] = np.random.randn(
-                self.layers[l], self.layers[l-1]) * 0.01
-            self.parameters[f'b{l}'] = np.zeros((self.layers[l], 1))
-    
-    def relu(self, Z):
-        return np.maximum(0, Z)
-    
-    def relu_derivative(self, Z):
-        return Z > 0
-    
-    def softmax(self, Z):
-        expZ = np.exp(Z - np.max(Z))
-        return expZ / expZ.sum(axis=0, keepdims=True)
-    
-    def forward_propagation(self, X):
-        A = X
-        caches = []
-        L = len(self.layers) - 1
-        
-        for l in range(1, L):
-            A_prev = A
-            Z = np.dot(self.parameters[f'W{l}'], A_prev) + self.parameters[f'b{l}']
-            A = self.relu(Z)
-            caches.append((A_prev, Z))
-        
-        ZL = np.dot(self.parameters[f'W{L}'], A) + self.parameters[f'b{L}']
-        AL = self.softmax(ZL)
-        caches.append((A, ZL))
-        
-        return AL, caches
-    
-    def compute_cost(self, AL, Y):
-        m = Y.shape[1]
-        cost = -np.sum(Y * np.log(AL + 1e-8)) / m
-        return cost
-    
-    def backward_propagation(self, AL, Y, caches):
-        m = Y.shape[1]
-        L = len(self.layers) - 1
-        
-        # Output layer gradient
-        dZL = AL - Y
-        self.gradients[f'dW{L}'] = np.dot(dZL, caches[-1][0].T) / m
-        self.gradients[f'db{L}'] = np.sum(dZL, axis=1, keepdims=True) / m
-        
-        # Hidden layers gradients
-        dA_prev = np.dot(self.parameters[f'W{L}'].T, dZL)
-        
-        for l in reversed(range(1, L)):
-            A_prev, Z = caches[l-1]
-            dZ = dA_prev * self.relu_derivative(Z)
-            self.gradients[f'dW{l}'] = np.dot(dZ, A_prev.T) / m
-            self.gradients[f'db{l}'] = np.sum(dZ, axis=1, keepdims=True) / m
-            dA_prev = np.dot(self.parameters[f'W{l}'].T, dZ)
-    
-    def update_parameters(self, learning_rate=0.01):
-        for l in range(1, len(self.layers)):
-            self.parameters[f'W{l}'] -= learning_rate * self.gradients[f'dW{l}']
-            self.parameters[f'b{l}'] -= learning_rate * self.gradients[f'db{l}']
-    
-    def train(self, X, Y, iterations=1000, learning_rate=0.01):
-        costs = []
-        
-        for i in range(iterations):
-            # Forward propagation
-            AL, caches = self.forward_propagation(X)
-            
-            # Compute cost
-            cost = self.compute_cost(AL, Y)
-            costs.append(cost)
-            
-            # Backward propagation
-            self.backward_propagation(AL, Y, caches)
-            
-            # Update parameters
-            self.update_parameters(learning_rate)
-            
-            if i % 100 == 0:
-                print(f"Iteration {i}, Cost: {cost:.4f}")
-        
-        return costs
-
-# Пример использования
-nn = NeuralNetwork([784, 128, 64, 10])  # MNIST classification
-# costs = nn.train(X_train, Y_train)`
-                };
-            }
-
-            generateSmartResponse(prompt) {
-                const smartTemplates = [
-                    `🧠 **Анализ запроса:** "${prompt}"\n\n` +
-                    `🔍 **Глубокий анализ:** На основе паттернов в вашем запросе, нейросеть определила оптимальное решение. ` +
-                    `Используются современные архитектуры и лучшие практики.\n\n` +
-                    `💡 **Рекомендация:** Для реализации рекомендую использовать предложенный код с кастомизацией под ваши требования.`,
-
-                    `⚡ **Генерация решения для:** "${prompt}"\n\n` +
-                    `📊 **Архитектурный подход:** Решение построено на микросервисной архитектуре с использованием облачных технологий. ` +
-                    `Обеспечивает масштабируемость и отказоустойчивость.\n\n` +
-                    `🚀 **Производительность:** Оптимизировано для обработки до 10K RPS с задержкой <50ms.`
-                ];
-
-                return {
-                    text: smartTemplates[Math.floor(Math.random() * smartTemplates.length)],
-                    code: `// Автоматически сгенерированное решение Quantum AI
-// Запрос: "${prompt}"
-
-/**
- * ⚡ QUANTUM AI GENERATED SOLUTION
- * 🔬 Сложность: Advanced
- * 🎯 Точность: 99.8%
- * 💾 Память: Optimized
- */
-
-console.log("🚀 Решение активировано Quantum Neural AI");`
-                };
-            }
-        }
-
-        // Инициализация AI
-        const quantumAI = new QuantumNeuralAI();
-
-        // Визуализация нейросети
-        function initNeuralVisualization() {
-            const canvas = document.getElementById('neuralCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            const neurons = [];
-            const connections = [];
-
-            // Создание нейронов
-            for (let i = 0; i < 50; i++) {
-                neurons.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 2 + 1,
-                    speed: Math.random() * 0.5 + 0.1,
-                    angle: Math.random() * Math.PI * 2
-                });
-            }
-
-            // Создание соединений
-            for (let i = 0; i < neurons.length; i++) {
-                for (let j = i + 1; j < neurons.length; j++) {
-                    if (Math.random() > 0.7) {
-                        connections.push({ from: i, to: j });
-                    }
+Просто скопируй и используй! 🎯`;
                 }
+                
+                if (message.includes('javascript')) {
+                    return `JavaScript - моя любовь! Смотри какой крутой код:
+
+\`\`\`javascript
+// Современный JS - просто охуенно!
+const processData = async (data) => {
+    try {
+        const response = await fetch('/api/data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        if (!response.ok) throw new Error('Ошибка сети');
+        
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Бро, ошибка:', error);
+        throw error;
+    }
+};
+
+// Использование
+const data = { user: 'bro', action: 'code' };
+processData(data).then(console.log).catch(console.error);
+\`\`\`
+
+Этот код обрабатывает данные как настоящий про! 💻`;
+                }
+
+                return "Брат, по коду помогу! Напиши конкретнее что нужно - React компонент, JavaScript функцию, или может HTML/CSS? Сделаю быстро и качественно! 🚀";
             }
 
-            function animate() {
-                ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            getTechResponse(message) {
+                if (message.includes('ai') || message.includes('нейросет')) {
+                    return "AI сейчас просто взрывает мозг! 🤯 Тот чат в котором мы общаемся - это пример современного AI. Может генерировать код, отвечать на вопросы, даже шутки шутить! Скоро вообще всё будут делать нейросети.";
+                }
+                
+                if (message.includes('блокчейн')) {
+                    return "Блокчейн - это не только крипта! Технология охуенная для безопасности данных. Представь: все транзакции записываются в цепочку блоков, которую невозможно изменить. Круто же! ⛓️";
+                }
 
-                // Обновление нейронов
-                neurons.forEach(neuron => {
-                    neuron.x += Math.cos(neuron.angle) * neuron.speed;
-                    neuron.y += Math.sin(neuron.angle) * neuron.speed;
-
-                    if (neuron.x < 0 || neuron.x > canvas.width) neuron.angle = Math.PI - neuron.angle;
-                    if (neuron.y < 0 || neuron.y > canvas.height) neuron.angle = -neuron.angle;
-
-                    // Отрисовка нейронов
-                    ctx.beginPath();
-                    ctx.arc(neuron.x, neuron.y, neuron.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(0, 255, 136, ${neuron.radius / 3})`;
-                    ctx.fill();
-                });
-
-                // Отрисовка соединений
-                connections.forEach(conn => {
-                    const from = neurons[conn.from];
-                    const to = neurons[conn.to];
-                    const distance = Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
-
-                    if (distance < 150) {
-                        ctx.beginPath();
-                        ctx.moveTo(from.x, from.y);
-                        ctx.lineTo(to.x, to.y);
-                        ctx.strokeStyle = `rgba(0, 255, 136, ${0.3 * (1 - distance / 150)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                });
-
-                requestAnimationFrame(animate);
+                return "Технологии - это наше всё! Сейчас самое время учить программирование, AI, блокчейн. Через пару лет эти навыки будут цениться на вес золота! 💰";
             }
 
-            animate();
+            getJokeResponse() {
+                const jokes = [
+                    "Почему программисты путают Хэллоуин и Рождество? Потому что Oct 31 == Dec 25! 😄",
+                    "Какой у программиста любимый напиток? Java! ☕", 
+                    "Программист звонит в техподдержку: 'У меня компьютер не работает!' - 'А вы пробовали включать?' - 'Пробовал, не помогает!' 🤣",
+                    "Почему Python стал таким популярным? Потому что он змеиный... нет, подожди... потому что простой! 🐍"
+                ];
+                return jokes[Math.floor(Math.random() * jokes.length)];
+            }
+
+            getDefaultResponse() {
+                const responses = [
+                    "Интересный вопрос! Смотри, если коротко - всё реально, главное браться и делать. 💪",
+                    "Брат, в этом мире всё возможно! Нужно только разобраться как. 🚀",
+                    "Хороший вопрос! Дай-ка подумать... А точно! Всё проще чем кажется. 😎", 
+                    "О, это мы можем решить! Главное - правильный подход и немного магии кода. ✨",
+                    "Слушай, отличный вопрос! Сейчас объясню всё по полочкам... 📚",
+                    "Бро, это элементарно! Смотри как просто всё устроено... 👨‍💻"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
         }
+
+        // Создаем AI
+        const colinAI = new ColinAI();
 
         // Функции интерфейса
         async function processAIRequest() {
             const input = document.getElementById('aiInput');
-            const prompt = input.value.trim();
+            const message = input.value.trim();
             
-            if (!prompt) return;
+            if (!message) return;
 
-            addMessage(prompt, 'user');
+            // Добавляем сообщение пользователя
+            addMessage(message, 'user');
             input.value = '';
 
-            // Показ индикатора мышления
+            // Показываем индикатор
             showThinkingIndicator();
 
-            // Имитация обработки нейросетью
-            await simulateNeuralProcessing();
+            // Имитация задержки
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
 
-            // Получение ответа от AI
-            const response = quantumAI.generateResponse(prompt);
+            // Получаем ответ
+            const response = colinAI.getResponse(message);
             
-            // Удаление индикатора и добавление ответа
+            // Убираем индикатор и показываем ответ
             removeThinkingIndicator();
-            addAIReponse(response);
+            addMessage(response, 'ai');
         }
 
         function showThinkingIndicator() {
@@ -705,7 +391,7 @@ console.log("🚀 Решение активировано Quantum Neural AI");`
                     <div class="neuron"></div>
                     <div class="neuron"></div>
                 </div>
-                Квантовая нейросеть обрабатывает запрос...
+                Quantum AI генерирует ответ...
             `;
             chatArea.appendChild(thinkingDiv);
             chatArea.scrollTop = chatArea.scrollHeight;
@@ -716,42 +402,15 @@ console.log("🚀 Решение активировано Quantum Neural AI");`
             if (thinking) thinking.remove();
         }
 
-        async function simulateNeuralProcessing() {
-            return new Promise(resolve => {
-                setTimeout(resolve, 1500 + Math.random() * 1000);
-            });
-        }
-
-        function addAIReponse(response) {
-            const chatArea = document.getElementById('chatArea');
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            
-            let content = `<strong>${response.text}</strong><br><br>`;
-            
-            if (response.code) {
-                content += `
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>🔧 СГЕНЕРИРОВАННЫЙ КОД</span>
-                            <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-                        </div>
-                        <pre>${response.code}</pre>
-                    </div>
-                `;
-            }
-            
-            messageDiv.innerHTML = content;
-            chatArea.appendChild(messageDiv);
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }
-
         function addMessage(text, type) {
             const chatArea = document.getElementById('chatArea');
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}-message`;
-            messageDiv.textContent = text;
+            messageDiv.className = `message ${type === 'user' ? 'user-message' : ''}`;
+            
+            // Форматируем код если есть
+            const formattedText = text.replace(/\`\`\`(\w+)?\n([\s\S]*?)\`\`\`/g, '<div style="background: #1a1a1a; padding: 1rem; border-radius: 5px; margin: 0.5rem 0; overflow-x: auto;"><pre style="color: #00ff88; margin: 0;">$2</pre></div>');
+            messageDiv.innerHTML = formattedText.replace(/\n/g, '<br>');
+            
             chatArea.appendChild(messageDiv);
             chatArea.scrollTop = chatArea.scrollHeight;
         }
@@ -767,19 +426,9 @@ console.log("🚀 Решение активировано Quantum Neural AI");`
             }
         }
 
-        function copyCode(button) {
-            const codeBlock = button.closest('.code-block');
-            const code = codeBlock.querySelector('pre').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                button.textContent = 'Скопировано!';
-                setTimeout(() => button.textContent = 'Копировать', 2000);
-            });
-        }
-
-        // Инициализация
+        // Фокусируемся на инпуте при загрузке
         window.addEventListener('load', () => {
-            initNeuralVisualization();
-            console.log("🚀 Quantum Neural AI готов к работе!");
+            document.getElementById('aiInput').focus();
         });
     </script>
 </body>
